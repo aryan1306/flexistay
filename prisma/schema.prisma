@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Hotel {
+  id        String   @id @default(cuid())
+  name String
+  phone String @unique
+  email String @unique
+  district String
+  address1 String
+  address2 String
+  city String
+  pincode Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  facilities String[]
+  fourHourPrice String
+  eightHourPrice String
+  generalPrice String
+  bookings Booking[]
+  admin HotelAdmin?
+}
+
+model Booking {
+  id        String   @id @default(cuid())
+  isCancelled Boolean? @default(false)
+  checkInDateTime DateTime
+  checkOutDateTime DateTime
+  hasPaid Boolean @default(false)
+  price String
+  hotelId String
+  guestId String
+  noOfGuest Int
+  noOfChildren Int
+  noOfRoom Int
+  referralCode String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+  hotel Hotel @relation(fields: [hotelId], references: [id])
+  referral Referral @relation(fields: [referralCode], references: [code])
+}
+
+model HotelAdmin {
+  id        String   @id @default(cuid())
+  userId String
+  password String
+  hotelId String @unique
+  hotel Hotel@relation(fields: [hotelId], references: [id])
+}
+
+model Referral {
+  id        String   @id @default(cuid())
+  code String @unique
+  name String
+  booking Booking[]
+}
