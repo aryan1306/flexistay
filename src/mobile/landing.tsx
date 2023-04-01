@@ -4,7 +4,6 @@ import ReactDatePicker from "react-datepicker";
 import { addDays, setHours, setMinutes } from "date-fns";
 import { TbClockEdit, TbCurrencyRupee, TbHotelService } from "react-icons/tb";
 import { Footer } from "@/components/landing/footer";
-import { useRouter } from "next/router";
 import Link from "next/link";
 
 interface Props {
@@ -25,12 +24,6 @@ export const Landing = ({
   startDate,
   setStartDate,
 }: Props) => {
-  const router = useRouter();
-  const handleClick = () => {
-    void (async () => {
-      await router.push("/listing");
-    });
-  };
   return (
     <>
       <Navbar mobile={true} dropShadow={false} />

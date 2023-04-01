@@ -10,7 +10,7 @@ import CoverImg from "../../public/cover-img.jpg";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { Navbar } from "@/components/Navbar";
-import { api } from "@/utils/api";
+// import { api } from "@/utils/api";
 import { DropDown } from "@/components/Dropdown";
 import { TbClockEdit, TbCurrencyRupee, TbHotelService } from "react-icons/tb";
 import { Footer } from "@/components/landing/footer";
@@ -22,7 +22,6 @@ const cities = [{ name: "Bangalore" }, { name: "Delhi" }, { name: "Mumbai" }];
 const date = new Date();
 
 const Home: NextPage = () => {
-  const data = api.hotel.getAllByCity.useQuery({ city: "Mumbai" });
   const [selected, setSelected] = useState(cities[0]);
   const [startDate, setStartDate] = useState(new Date());
   const [windowWidth, setWindowWidth] = useState(0);
