@@ -15,6 +15,8 @@ import { DropDown } from "@/components/Dropdown";
 import { TbClockEdit, TbCurrencyRupee, TbHotelService } from "react-icons/tb";
 import { Footer } from "@/components/landing/footer";
 import { Landing } from "@/mobile/landing";
+import { MIN_WIDTH } from "@/utils/constants";
+import Link from "next/link";
 
 const cities = [{ name: "Bangalore" }, { name: "Delhi" }, { name: "Mumbai" }];
 const date = new Date();
@@ -38,7 +40,7 @@ const Home: NextPage = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {windowWidth < 600 ? (
+      {windowWidth < MIN_WIDTH ? (
         <Landing
           setter={setSelected}
           value={selected}
@@ -113,7 +115,12 @@ const Home: NextPage = () => {
               </div>
             </div>
             <div className="mt-10 flex justify-center">
-              <button className="btn-brand-primary">Search Hotels</button>
+              <Link
+                href={"/listing"}
+                className="btn-brand-primary no-underline"
+              >
+                Search Hotels
+              </Link>
               <button className="btn-brand-outline ml-4">
                 Book by Referral
               </button>

@@ -4,6 +4,8 @@ import ReactDatePicker from "react-datepicker";
 import { addDays, setHours, setMinutes } from "date-fns";
 import { TbClockEdit, TbCurrencyRupee, TbHotelService } from "react-icons/tb";
 import { Footer } from "@/components/landing/footer";
+import { useRouter } from "next/router";
+import Link from "next/link";
 
 interface Props {
   setter: (value: { name: string } | undefined) => void;
@@ -23,6 +25,12 @@ export const Landing = ({
   startDate,
   setStartDate,
 }: Props) => {
+  const router = useRouter();
+  const handleClick = () => {
+    void (async () => {
+      await router.push("/listing");
+    });
+  };
   return (
     <>
       <Navbar mobile={true} dropShadow={false} />
@@ -61,9 +69,14 @@ export const Landing = ({
             />
           </div>
           <div className="mt-10 flex justify-center">
-            <button className="btn-brand-primary">Search Hotels</button>
+            <Link href={"/listing"} className="btn-brand-primary no-underline">
+              Search Hotels
+            </Link>
             <button className="btn-brand-outline ml-4">Book by Referral</button>
           </div>
+          <p className="mt-6 text-center text-lg font-semibold text-brand-primary">
+            Sign up to get upto 50% discount*
+          </p>
         </div>
         <h2 className="mb-5 text-center text-2xl font-semibold text-brand-primary">
           Why Book Hotel By Hour?
