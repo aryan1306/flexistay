@@ -1,7 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { RiMenu3Fill } from "react-icons/ri";
 
 import logoPic from "../../public/logo.svg";
 
@@ -23,29 +21,6 @@ export const Navbar = () => {
           FlexiStay
         </h2>
       </div>
-      {windowWidth > 768 ? (
-        <div className="mr-7 flex items-center justify-around space-x-4">
-          <Link href="/about" className="text-white">
-            About Us
-          </Link>
-          <Link href="/contact" className="text-white">
-            Contact Us
-          </Link>
-          <Link href="/privacy-policy" className="text-white">
-            Privacy Policy
-          </Link>
-          <Link href="/terms" className="text-white">
-            Terms & Conditions
-          </Link>
-          <Link href="/cancellation-policy" className="pl-3 text-white">
-            Cancellation/Refund Policy
-          </Link>
-        </div>
-      ) : (
-        <div className="mr-6 self-center">
-          <RiMenu3Fill className="cursor-pointer text-3xl text-white" />
-        </div>
-      )}
     </div>
   );
 };
