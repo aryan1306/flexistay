@@ -1,10 +1,10 @@
 import { Navbar } from "@/components/Navbar";
 import { DropDown } from "@/components/Dropdown";
 import ReactDatePicker from "react-datepicker";
-import { addDays, setHours, setMinutes } from "date-fns";
+import { addDays } from "date-fns";
 import { TbClockEdit, TbCurrencyRupee, TbHotelService } from "react-icons/tb";
 import { Footer } from "@/components/landing/footer";
-import Link from "next/link";
+import { type MouseEvent } from "react";
 
 interface Props {
   setter: (value: { name: string } | undefined) => void;
@@ -13,9 +13,8 @@ interface Props {
   startDate: Date;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setStartDate: any;
+  handleClick: (e: MouseEvent<HTMLButtonElement>) => void;
 }
-
-const date = new Date();
 
 export const Landing = ({
   setter,
@@ -23,6 +22,7 @@ export const Landing = ({
   list,
   startDate,
   setStartDate,
+  handleClick,
 }: Props) => {
   return (
     <>
@@ -43,28 +43,26 @@ export const Landing = ({
               customInput={
                 <input className="relative mt-5 h-20 w-full cursor-pointer rounded-lg bg-white py-2 pl-3 pr-10 shadow-md focus:outline-none focus-visible:ring-white sm:text-sm" />
               }
-              minDate={new Date()}
+              minDate={
+                new Date().getHours() === 23 && new Date().getMinutes() >= 31
+                  ? addDays(new Date(), 1)
+                  : new Date()
+              }
               maxDate={addDays(new Date(), 60)}
               selected={startDate}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-non-null-assertion
               onChange={(date) => setStartDate(date!)}
-              showTimeSelect
-              // minTime={setHours(setMinutes(new Date(), 30), 20)}
-              minTime={
-                (date.getDate() < new Date().getDate() ||
-                  date.getMonth() <= new Date().getMonth()) &&
-                date.getMinutes() > 30
-                  ? setHours(setMinutes(new Date(), 0), date.getHours() + 1)
-                  : setHours(setMinutes(new Date(), 30), date.getHours())
-              }
-              maxTime={setHours(setMinutes(new Date(), 30), 23)}
-              dateFormat="MMMM d, yyyy"
+              dateFormat="PP"
             />
           </div>
           <div className="mt-10 flex justify-center">
-            <Link href={"/listing"} className="btn-brand-primary no-underline">
+            <button
+              type="submit"
+              onClick={handleClick}
+              className="btn-brand-primary no-underline"
+            >
               Search Hotels
-            </Link>
+            </button>
             <button className="btn-brand-outline ml-4">Book by Referral</button>
           </div>
           <p className="mt-6 text-center text-lg font-semibold text-brand-primary">

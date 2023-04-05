@@ -2,7 +2,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Image from "next/image";
 import { TypeAnimation } from "react-type-animation";
-import { useEffect, useState } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { addDays, setHours, setMinutes } from "date-fns";
 
@@ -10,26 +10,36 @@ import CoverImg from "../../public/cover-img.jpg";
 import "react-datepicker/dist/react-datepicker.css";
 
 import { Navbar } from "@/components/Navbar";
-// import { api } from "@/utils/api";
-import { DropDown } from "@/components/Dropdown";
 import { TbClockEdit, TbCurrencyRupee, TbHotelService } from "react-icons/tb";
+import { DropDown } from "@/components/Dropdown";
 import { Footer } from "@/components/landing/footer";
 import { Landing } from "@/mobile/landing";
 import { MIN_WIDTH } from "@/utils/constants";
-import Link from "next/link";
+import { cities } from "@/utils/constants";
+import { useRouter } from "next/router";
 
-const cities = [{ name: "Bangalore" }, { name: "Delhi" }, { name: "Mumbai" }];
 const date = new Date();
 
 const Home: NextPage = () => {
+  const router = useRouter();
   const [selected, setSelected] = useState(cities[0]);
-  const [startDate, setStartDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    date.getMinutes() > 30
+      ? setHours(setMinutes(new Date(), 0), date.getHours() + 1)
+      : setHours(setMinutes(new Date(), 30), date.getHours())
+  );
   const [windowWidth, setWindowWidth] = useState(0);
 
   useEffect(() => {
     const width = window.innerWidth;
     setWindowWidth(width);
   }, [windowWidth]);
+
+  const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises, @typescript-eslint/no-non-null-assertion
+    router.push(`listing/${selected!.name}`);
+  };
 
   return (
     <>
@@ -46,11 +56,12 @@ const Home: NextPage = () => {
           list={cities}
           startDate={startDate}
           setStartDate={setStartDate}
+          handleClick={handleClick}
         />
       ) : (
         <>
           <Navbar />
-          <main className="h-screen">
+          <div className="h-screen">
             <div className="relative h-[35rem] w-full bg-red-400">
               <div className="absolute h-[35rem] w-[70vw] bg-gradient-to-r from-brand-primary via-brand-primary">
                 <div className="p-10">
@@ -77,6 +88,7 @@ const Home: NextPage = () => {
               </div>
               <Image
                 src={CoverImg}
+                priority={true}
                 alt="room"
                 className="object-fit h-[35rem] w-screen pl-[27rem]"
               />
@@ -91,35 +103,29 @@ const Home: NextPage = () => {
                     customInput={
                       <input className="relative mt-[0.1rem] h-20 w-full cursor-pointer rounded-r-lg bg-white py-2 pl-3 pr-10 text-center shadow-md focus:outline-none focus-visible:ring-white sm:text-sm" />
                     }
-                    minDate={new Date()}
+                    minDate={
+                      new Date().getHours() === 23 &&
+                      new Date().getMinutes() >= 31
+                        ? addDays(new Date(), 1)
+                        : new Date()
+                    }
                     maxDate={addDays(new Date(), 60)}
                     selected={startDate}
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     onChange={(date) => setStartDate(date!)}
-                    showTimeSelect
-                    // minTime={setHours(setMinutes(new Date(), 30), 20)}
-                    minTime={
-                      (date.getDate() < new Date().getDate() ||
-                        date.getMonth() <= new Date().getMonth()) &&
-                      date.getMinutes() > 30
-                        ? setHours(
-                            setMinutes(new Date(), 0),
-                            date.getHours() + 1
-                          )
-                        : setHours(setMinutes(new Date(), 30), date.getHours())
-                    }
-                    maxTime={setHours(setMinutes(new Date(), 30), 23)}
-                    dateFormat="MMMM d, yyyy"
+                    dateFormat="PP"
                   />
                 </div>
               </div>
             </div>
             <div className="mt-10 flex justify-center">
-              <Link
-                href={"/listing"}
+              <button
+                type="submit"
+                onClick={handleClick}
                 className="btn-brand-primary no-underline"
               >
                 Search Hotels
-              </Link>
+              </button>
               <button className="btn-brand-outline ml-4">
                 Book by Referral
               </button>
@@ -156,7 +162,7 @@ const Home: NextPage = () => {
               </div>
             </div>
             <Footer />
-          </main>
+          </div>
         </>
       )}
     </>

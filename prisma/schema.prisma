@@ -26,8 +26,13 @@ model Hotel {
   fourHourPrice String
   eightHourPrice String
   generalPrice String
+  originalPrice String
+  images String[]
   bookings Booking[]
   admin HotelAdmin?
+
+  @@index([city], type: Hash)
+  @@index([district])
 }
 
 model Booking {
