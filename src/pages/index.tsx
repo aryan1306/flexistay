@@ -78,6 +78,7 @@ const Home: NextPage = () => {
               <Image
                 src={CoverImg}
                 alt="room"
+                priority={true}
                 className="object-fit h-[35rem] w-screen pl-[27rem]"
               />
             </div>
