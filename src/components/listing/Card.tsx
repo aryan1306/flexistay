@@ -6,6 +6,7 @@ import { AiOutlineWifi } from "react-icons/ai";
 import { type MouseEvent } from "react";
 import { useRouter } from "next/router";
 import { RUPEE_SYMBOL } from "@/utils/constants";
+import { useHotelStore } from "@/utils/zustand.store";
 
 interface Props {
   hotelId: string;
@@ -31,6 +32,7 @@ export const Card = ({
   hotelId,
 }: Props) => {
   const router = useRouter();
+  const [setPrice] = useHotelStore((state) => [state.setPrice]);
   const renderIcons = (item: string) => {
     switch (item) {
       case "wifi":
@@ -43,12 +45,6 @@ export const Card = ({
         return <></>;
     }
   };
-
-  function handleClick(e: MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    // eslint-disable-next-line @typescript-eslint/no-floating-promises
-    router.push(`hotel/${hotelId}`);
-  }
 
   return (
     <div className="mt-5 h-[28rem] w-full rounded-lg shadow-xl">
@@ -91,7 +87,12 @@ export const Card = ({
           <div className="flex w-1/3 flex-col items-center justify-center px-1">
             <p className="text-xs text-slate-500">4 hours</p>
             <button
-              onClick={handleClick}
+              onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setPrice(fourHourPrice);
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                router.push(`hotel/${hotelId}/4`);
+              }}
               className="h-10 w-full self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg"
             >
               {RUPEE_SYMBOL + fourHourPrice}
@@ -100,7 +101,12 @@ export const Card = ({
           <div className="flex w-1/3 flex-col items-center justify-center px-1">
             <p className="text-xs text-slate-500">8 hours</p>
             <button
-              onClick={handleClick}
+              onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setPrice(eightHourPrice);
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                router.push(`hotel/${hotelId}/8`);
+              }}
               className="h-10 w-full self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg"
             >
               {RUPEE_SYMBOL + eightHourPrice}
@@ -109,7 +115,12 @@ export const Card = ({
           <div className="flex w-1/3 flex-col items-center justify-center px-1">
             <p className="text-xs text-slate-500">24 hours</p>
             <button
-              onClick={handleClick}
+              onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                e.preventDefault();
+                setPrice(fullDayPrice);
+                // eslint-disable-next-line @typescript-eslint/no-floating-promises
+                router.push(`hotel/${hotelId}/24`);
+              }}
               className="h-10 w-full self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg"
             >
               {RUPEE_SYMBOL + fullDayPrice}

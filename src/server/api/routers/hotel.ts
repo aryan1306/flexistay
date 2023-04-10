@@ -8,6 +8,7 @@ export const hotelRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       const hotels = await ctx.prisma.hotel.findMany({
         where: { city: input.city },
+        include: { images: true },
       });
       return hotels;
     }),
@@ -18,6 +19,7 @@ export const hotelRouter = createTRPCRouter({
         where: {
           district: { in: input.district },
         },
+        include: { images: true },
       });
       return hotels;
     }),
@@ -26,6 +28,14 @@ export const hotelRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.hotel.findUnique({
         where: { id: input.id },
+        include: { images: true },
+      });
+    }),
+  getImagesByHotelId: publicProcedure
+    .input(z.object({ hotelId: z.string() }))
+    .query(async ({ input, ctx }) => {
+      return await ctx.prisma.images.findMany({
+        where: { hotelId: input.hotelId },
       });
     }),
 });

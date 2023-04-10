@@ -5,6 +5,7 @@ import { TbAirConditioning } from "react-icons/tb";
 import { IoRestaurantOutline } from "react-icons/io5";
 import { AiOutlineWifi } from "react-icons/ai";
 import { SlScreenDesktop } from "react-icons/sl";
+import { Inter } from "next/font/google";
 import { Navbar } from "@/components/Navbar";
 import type { GetServerSidePropsContext, InferGetStaticPropsType } from "next";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
@@ -15,8 +16,11 @@ import { api } from "@/utils/api";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import Head from "next/head";
 import { RUPEE_SYMBOL } from "@/utils/constants";
-import { Fragment, useState } from "react";
-import { Transition, Dialog } from "@headlessui/react";
+import { Fragment, useCallback, useEffect, useState } from "react";
+import { Transition, Dialog, RadioGroup } from "@headlessui/react";
+import { useRouter } from "next/router";
+
+const inter = Inter({ subsets: ["latin"] });
 
 export const getStaticProps = async (
   context: GetServerSidePropsContext<{ id: string }>
@@ -43,9 +47,34 @@ export const getStaticPaths = () => {
 export default function Hotel(
   props: InferGetStaticPropsType<typeof getStaticProps>
 ) {
-  const [isOpen, setIsOpen] = useState(false);
   const { id } = props;
+  const router = useRouter();
+  const hours = router.query.hour;
+  const [isOpen, setIsOpen] = useState(false);
+  const [option, setOption] = useState(hours as string);
+  const [price, setPrice] = useState("");
   const { data, isLoading } = api.hotel.getById.useQuery({ id });
+
+  const renderCorrectPrice = useCallback(
+    (hour: string) => {
+      switch (hour) {
+        case "4":
+          return data?.fourHourPrice;
+        case "8":
+          return data?.eightHourPrice;
+        case "24":
+          return data?.generalPrice;
+        default:
+          return "";
+      }
+    },
+    [data?.eightHourPrice, data?.fourHourPrice, data?.generalPrice]
+  );
+
+  useEffect(() => {
+    setPrice(renderCorrectPrice(hours as string) as string);
+  }, [hours, renderCorrectPrice]);
+
   if (isLoading) return <LoadingSpinner />;
 
   const renderIcons = (item: string, className: string) => {
@@ -73,6 +102,24 @@ export default function Hotel(
     setIsOpen(true);
   }
 
+  const renderCorrectHour = (price: string) => {
+    switch (price) {
+      case data?.fourHourPrice:
+        return "4 hours";
+      case data?.eightHourPrice:
+        return "8 hours";
+      case data?.generalPrice:
+        return "24 hours";
+      default:
+        return "";
+    }
+  };
+
+  const handleRadioChange = (value: string) => {
+    setOption(value);
+    setPrice(renderCorrectPrice(option) as string);
+  };
+
   return (
     <>
       <Head>
@@ -86,9 +133,9 @@ export default function Hotel(
         <div className="carousel-center carousel rounded-box mt-6 max-w-md space-x-4 bg-red-100 p-4 md:w-full">
           {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */}
           {data?.images.map((img) => (
-            <div key={img} className="carousel-item">
+            <div key={img.id} className="carousel-item">
               <Image
-                src={img}
+                src={img.url}
                 width={290}
                 height={190}
                 className="rounded-box"
@@ -142,14 +189,60 @@ export default function Hotel(
                     leaveTo="opacity-0 scale-95"
                   >
                     <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                      <div className="mt-4">
-                        <button
-                          type="button"
-                          className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                          onClick={closeModal}
-                        >
-                          Got it, thanks!
-                        </button>
+                      <div className="mt-2">
+                        <RadioGroup value={option} onChange={handleRadioChange}>
+                          <RadioGroup.Label>
+                            <span
+                              className={
+                                "text-xl font-semibold" + " " + inter.className
+                              }
+                            >
+                              Choose your slot
+                            </span>
+                          </RadioGroup.Label>
+                          <RadioGroup.Option
+                            className="mt-3 mb-1 w-full"
+                            value="4"
+                          >
+                            {({ checked }) => (
+                              <p
+                                className={
+                                  checked
+                                    ? `w-full rounded-lg bg-brand-primary py-1 pl-1 text-white ${inter.className}`
+                                    : `ml-1 ${inter.className}`
+                                }
+                              >
+                                4 hours
+                              </p>
+                            )}
+                          </RadioGroup.Option>
+                          <RadioGroup.Option className="mb-1 w-full" value="8">
+                            {({ checked }) => (
+                              <p
+                                className={
+                                  checked
+                                    ? `w-full rounded-lg bg-brand-primary py-1 pl-1 text-white ${inter.className}`
+                                    : `ml-1 ${inter.className}`
+                                }
+                              >
+                                8 hours
+                              </p>
+                            )}
+                          </RadioGroup.Option>
+                          <RadioGroup.Option className="mb-1 w-full" value="24">
+                            {({ checked }) => (
+                              <p
+                                className={
+                                  checked
+                                    ? `w-full rounded-lg bg-brand-primary py-1 pl-1 text-white ${inter.className}`
+                                    : `ml-1 ${inter.className}`
+                                }
+                              >
+                                24 hours
+                              </p>
+                            )}
+                          </RadioGroup.Option>
+                        </RadioGroup>
                       </div>
                     </Dialog.Panel>
                   </Transition.Child>
@@ -173,10 +266,10 @@ export default function Hotel(
       </div>
       <div className="btm-nav btm-nav-lg rounded-t-md drop-shadow-2xl">
         <div>
-          <span className="text-xs">4 hours</span>
+          <span className="text-xs">{renderCorrectHour(price)}</span>
           <div className="flex items-center">
             {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
-            <p className="text-xl font-bold">{`${RUPEE_SYMBOL}${data?.fourHourPrice}`}</p>
+            <p className="text-xl font-bold">{`${RUPEE_SYMBOL}${price}`}</p>
             {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
             <p className="ml-1 text-sm line-through">{`${RUPEE_SYMBOL}${data?.originalPrice}`}</p>
           </div>
@@ -189,7 +282,10 @@ export default function Hotel(
         </span>
         <div className="w-full">
           {/* eslint-disable-next-line @typescript-eslint/restrict-template-expressions */}
-          <button className="h-10 w-[85%] self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg">
+          <button
+            disabled={!price}
+            className="h-10 w-[85%] self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg disabled:bg-slate-500 disabled:text-slate-300 disabled:shadow-none"
+          >
             Book Now
           </button>
         </div>

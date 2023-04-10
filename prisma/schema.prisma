@@ -27,12 +27,19 @@ model Hotel {
   eightHourPrice String
   generalPrice String
   originalPrice String
-  images String[]
+  images Images[]
   bookings Booking[]
   admin HotelAdmin?
 
   @@index([city], type: Hash)
   @@index([district])
+}
+
+model Images {
+  id String @id @default(cuid())
+  url String
+  hotelId String
+  hotel Hotel @relation(fields: [hotelId], references: [id])
 }
 
 model Booking {

@@ -1,10 +1,14 @@
 import { Card } from "@/components/listing/Card";
 import { Navbar } from "@/components/Navbar";
-import { type Hotel } from "@prisma/client";
+import type { Images, Hotel } from "@prisma/client";
 import { RiSortDesc } from "react-icons/ri";
 
 interface Props {
-  data: Hotel[] | undefined;
+  data:
+    | (Hotel & {
+        images: Images[];
+      })[]
+    | undefined;
 }
 
 export const MobileListing = ({ data }: Props) => {
@@ -20,7 +24,7 @@ export const MobileListing = ({ data }: Props) => {
             {data?.map((item) => (
               <Card
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unsafe-member-access
-                src={item.images[0]!}
+                src={item.images[0]!.url}
                 key={item.id}
                 name={item.name}
                 area={item.district}

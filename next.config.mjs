@@ -15,6 +15,12 @@ const config = {
         port: "",
         pathname: "/flexistay-hotels/**",
       },
+      {
+        protocol: "https",
+        hostname: "flexistay.s3.ap-south-1.amazonaws.com",
+        port: "",
+        pathname: "/dev/**",
+      },
     ],
   },
 
