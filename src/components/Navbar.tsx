@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 import logoPic from "../../public/logo.svg";
 
@@ -17,12 +18,15 @@ export const Navbar = ({ mobile = false, dropShadow = true }: Props) => {
       <div className="ml-5 flex items-center">
         <Image
           src={logoPic as string}
-          alt="logo"
+          alt="Flexistay"
+          priority={true}
           className={`${mobile ? "w-[21.3%]" : "w-[24.3%]"} pb-1 md:w-[12.3%]`}
         />
-        <h2 className="mt-1 self-center text-4xl font-semibold text-white">
-          FlexiStay
-        </h2>
+        <Link href="/">
+          <h2 className="mt-1 self-center text-4xl font-semibold text-white">
+            FlexiStay
+          </h2>
+        </Link>
       </div>
     </div>
   );
