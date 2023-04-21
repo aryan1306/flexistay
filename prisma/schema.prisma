@@ -23,8 +23,9 @@ model Hotel {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
   facilities String[]
-  fourHourPrice String
-  eightHourPrice String
+  hotelType String?
+  fourHourPrice String?
+  eightHourPrice String?
   generalPrice String
   originalPrice String
   images Images[]

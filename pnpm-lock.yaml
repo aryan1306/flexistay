@@ -18,6 +18,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.53.0
   '@typescript-eslint/parser': ^5.53.0
   autoprefixer: ^10.4.7
+  csstype: 3.0.10
   daisyui: ^2.51.5
   date-fns: ^2.29.3
   eslint: ^8.34.0
@@ -31,6 +32,7 @@ specifiers:
   react: 18.2.0
   react-datepicker: ^4.10.0
   react-dom: 18.2.0
+  react-hot-toast: ^2.4.0
   react-icons: ^4.8.0
   react-type-animation: ^3.0.1
   sharp: ^0.32.0
@@ -50,6 +52,7 @@ dependencies:
   '@trpc/react-query': 10.18.0_rcvfzig2xktluz4p7kugxqlbwi
   '@trpc/server': 10.18.0
   '@types/react-datepicker': 4.10.0_biqbaboplfbrettd7655fr4n2y
+  csstype: 3.0.10
   daisyui: 2.51.5_j7yt3jd32cwenjqavrrga47yr4
   date-fns: 2.29.3
   next: 13.2.4_biqbaboplfbrettd7655fr4n2y
@@ -57,6 +60,7 @@ dependencies:
   react: 18.2.0
   react-datepicker: 4.10.0_biqbaboplfbrettd7655fr4n2y
   react-dom: 18.2.0_react@18.2.0
+  react-hot-toast: 2.4.0_zunkpj6dptrfkocboupxe72lvq
   react-icons: 4.8.0_react@18.2.0
   react-type-animation: 3.0.1_biqbaboplfbrettd7655fr4n2y
   sharp: 0.32.0
@@ -1154,6 +1158,10 @@ packages:
     engines: {node: '>=4'}
     hasBin: true
 
+  /csstype/3.0.10:
+    resolution: {integrity: sha512-2u44ZG2OcNUO9HDp/Jl8C07x6pU/eTR3ncV91SiK3dhG9TWvRVsCoJw14Ckx5DgWkzGA3waZWO3d7pgqpUI/XA==}
+    dev: false
+
   /csstype/3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
 
@@ -1936,6 +1944,14 @@ packages:
   /globrex/0.1.2:
     resolution: {integrity: sha512-uHJgbwAMwNFf5mLst7IWLNg14x1CkeqglJb/K3doi4dw6q2IvAAmM/Y81kevy83wP+Sst+nutFTYOGg3d1lsxg==}
     dev: true
+
+  /goober/2.1.13_csstype@3.0.10:
+    resolution: {integrity: sha512-jFj3BQeleOoy7t93E9rZ2de+ScC4lQICLwiAQmKMg9F6roKGaLSHoCDYKkWlSafg138jejvq/mTdvmnwDQgqoQ==}
+    peerDependencies:
+      csstype: ^3.0.10
+    dependencies:
+      csstype: 3.0.10
+    dev: false
 
   /gopd/1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
@@ -2900,6 +2916,20 @@ packages:
 
   /react-fast-compare/3.2.1:
     resolution: {integrity: sha512-xTYf9zFim2pEif/Fw16dBiXpe0hoy5PxcD8+OwBnTtNLfIm3g6WxhKNurY+6OmdH1u6Ta/W/Vl6vjbYP1MFnDg==}
+    dev: false
+
+  /react-hot-toast/2.4.0_zunkpj6dptrfkocboupxe72lvq:
+    resolution: {integrity: sha512-qnnVbXropKuwUpriVVosgo8QrB+IaPJCpL8oBI6Ov84uvHZ5QQcTp2qg6ku2wNfgJl6rlQXJIQU5q+5lmPOutA==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16'
+      react-dom: '>=16'
+    dependencies:
+      goober: 2.1.13_csstype@3.0.10
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+    transitivePeerDependencies:
+      - csstype
     dev: false
 
   /react-icons/4.8.0_react@18.2.0:

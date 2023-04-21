@@ -5,6 +5,7 @@ import { addDays } from "date-fns";
 import { TbClockEdit, TbCurrencyRupee, TbHotelService } from "react-icons/tb";
 import { Footer } from "@/components/landing/footer";
 import { type MouseEvent } from "react";
+import { Toaster } from "react-hot-toast";
 
 interface Props {
   setter: (value: { name: string } | undefined) => void;
@@ -109,6 +110,7 @@ export const Landing = ({
           </div>
         </div>
         <Footer mobile={true} />
+        <Toaster />
       </main>
     </>
   );

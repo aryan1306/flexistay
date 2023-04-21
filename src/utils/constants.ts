@@ -6,3 +6,6 @@ export const cities = [
   { name: "Delhi" },
   { name: "Mumbai" },
 ];
+
+export const CLASSIC_HOTEL = "CLASSIC_HOTEL";
+export const HOURLY_HOTEL = "HOURLY_HOTEL";
