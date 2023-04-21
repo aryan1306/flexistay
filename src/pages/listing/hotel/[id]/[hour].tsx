@@ -52,7 +52,10 @@ export default function Hotel(
   const hours = router.query.hour;
   const [isOpen, setIsOpen] = useState(false);
   const { data, isLoading, isError } = api.hotel.getById.useQuery({ id });
-  const [option, setOption] = useState({ price: "", hour: "" });
+  const [option, setOption] = useState<{
+    price: string | null;
+    hour: string | null;
+  }>({ price: "", hour: "" });
 
   const renderCorrectPrice = useCallback(
     (hour: string) => {
@@ -285,9 +288,13 @@ export default function Hotel(
         </div>
         <div className="btm-nav btm-nav-lg rounded-t-md drop-shadow-2xl">
           <div>
-            <span className="text-xs">{option.hour + " hours"}</span>
+            <span className="text-xs">
+              {option.hour && `${option.hour} hours`}
+            </span>
             <div className="flex items-center">
-              <p className="text-xl font-bold">{`${RUPEE_SYMBOL}${option.price}`}</p>
+              <p className="text-xl font-bold">
+                {option.price && `${RUPEE_SYMBOL}${option.price}`}
+              </p>
               <p className="ml-1 text-sm line-through">{`${RUPEE_SYMBOL}${data.originalPrice}`}</p>
             </div>
           </div>
