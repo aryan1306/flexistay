@@ -13,8 +13,8 @@ interface Props {
   src: StaticImageData | string;
   name: string;
   area: string;
-  fourHourPrice: string;
-  eightHourPrice: string;
+  fourHourPrice: string | null;
+  eightHourPrice: string | null;
   fullDayPrice: string;
   ogPrice: string;
   facilities: string[];
@@ -89,13 +89,13 @@ export const Card = ({
             <button
               onClick={(e: MouseEvent<HTMLButtonElement>) => {
                 e.preventDefault();
-                setPrice(fourHourPrice);
+                fourHourPrice && setPrice(fourHourPrice);
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 router.push(`hotel/${hotelId}/4`);
               }}
               className="h-10 w-full self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg"
             >
-              {RUPEE_SYMBOL + fourHourPrice}
+              {fourHourPrice && `${RUPEE_SYMBOL}${fourHourPrice}`}
             </button>
           </div>
           <div className="flex w-1/3 flex-col items-center justify-center px-1">
@@ -103,13 +103,13 @@ export const Card = ({
             <button
               onClick={(e: MouseEvent<HTMLButtonElement>) => {
                 e.preventDefault();
-                setPrice(eightHourPrice);
+                eightHourPrice && setPrice(eightHourPrice);
                 // eslint-disable-next-line @typescript-eslint/no-floating-promises
                 router.push(`hotel/${hotelId}/8`);
               }}
               className="h-10 w-full self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg"
             >
-              {RUPEE_SYMBOL + eightHourPrice}
+              {eightHourPrice && `${RUPEE_SYMBOL}${eightHourPrice}`}
             </button>
           </div>
           <div className="flex w-1/3 flex-col items-center justify-center px-1">
