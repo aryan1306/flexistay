@@ -200,6 +200,10 @@ export default function Hotel(
                       <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                         <div className="mt-2">
                           <RadioGroup
+                            defaultValue={{
+                              price: data.generalPrice,
+                              hour: "24",
+                            }}
                             value={option}
                             onChange={(value) => {
                               setOption(value);
@@ -220,10 +224,10 @@ export default function Hotel(
                               className="mt-3 mb-1 w-full"
                               value={{ price: data.fourHourPrice, hour: "4" }}
                             >
-                              {({ checked }) => (
+                              {({ active }) => (
                                 <p
                                   className={
-                                    checked
+                                    active
                                       ? `w-full rounded-lg bg-brand-primary py-1 pl-1 text-white ${inter.className}`
                                       : `ml-1 ${inter.className}`
                                   }
@@ -236,10 +240,10 @@ export default function Hotel(
                               className="mb-1 w-full"
                               value={{ price: data.eightHourPrice, hour: "8" }}
                             >
-                              {({ checked }) => (
+                              {({ active }) => (
                                 <p
                                   className={
-                                    checked
+                                    active
                                       ? `w-full rounded-lg bg-brand-primary py-1 pl-1 text-white ${inter.className}`
                                       : `ml-1 ${inter.className}`
                                   }
@@ -252,10 +256,10 @@ export default function Hotel(
                               className="mb-1 w-full"
                               value={{ price: data.generalPrice, hour: "24" }}
                             >
-                              {({ checked }) => (
+                              {({ active }) => (
                                 <p
                                   className={
-                                    checked
+                                    active
                                       ? `w-full rounded-lg bg-brand-primary py-1 pl-1 text-white ${inter.className}`
                                       : `ml-1 ${inter.className}`
                                   }
