@@ -143,8 +143,8 @@ export default function Hotel(
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
               <div key={img.id} className="carousel-item">
                 <Image
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                  src={img.url as string}
+                  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
+                  src={img.url}
                   width={290}
                   height={190}
                   className="rounded-box"
