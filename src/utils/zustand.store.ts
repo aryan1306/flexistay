@@ -1,15 +1,27 @@
 import { create } from "zustand";
+import { devtools, persist, createJSONStorage } from "zustand/middleware";
 
-interface HotelState {
-  price: string;
-  hours: string;
-  setPrice: (price: string) => void;
-  setHours: (hours: string) => void;
+interface HotelDetailsState {
+  hotelId: string;
+  hotelType: string;
+  setHotelId: (hotelId: string) => void;
+  setHotelType: (hotelType: string) => void;
 }
-// hotel price and hours store
-export const useHotelStore = create<HotelState>()((set) => ({
-  price: "",
-  hours: "",
-  setPrice: (price) => set({ price }),
-  setHours: (hours) => set({ hours }),
-}));
+
+//hotel id and type to review booking
+export const useHotelDetailsStore = create<HotelDetailsState>()(
+  devtools(
+    persist(
+      (set) => ({
+        hotelId: "",
+        hotelType: "",
+        setHotelId: (hotelId) => set({ hotelId }),
+        setHotelType: (hotelType) => set({ hotelType }),
+      }),
+      {
+        name: "z/hotelDetails",
+        storage: createJSONStorage(() => sessionStorage),
+      }
+    )
+  )
+);

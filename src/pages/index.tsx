@@ -15,7 +15,7 @@ import { TbClockEdit, TbCurrencyRupee, TbHotelService } from "react-icons/tb";
 import { DropDown } from "@/components/Dropdown";
 import { Footer } from "@/components/landing/footer";
 import { Landing } from "@/mobile/landing";
-import { MIN_WIDTH } from "@/utils/constants";
+import { CLASSIC_HOTEL, HOURLY_HOTEL, MIN_WIDTH } from "@/utils/constants";
 import { cities } from "@/utils/constants";
 import { useRouter } from "next/router";
 
@@ -24,6 +24,7 @@ const date = new Date();
 const Home: NextPage = () => {
   const router = useRouter();
   const [selected, setSelected] = useState(cities[0]);
+  const [hotelType, setHotelType] = useState(CLASSIC_HOTEL);
   const [startDate, setStartDate] = useState(
     date.getMinutes() > 30
       ? setHours(setMinutes(new Date(), 0), date.getHours() + 1)
@@ -34,6 +35,9 @@ const Home: NextPage = () => {
   useEffect(() => {
     const width = window.innerWidth;
     setWindowWidth(width);
+    return () => {
+      toast.dismiss();
+    };
   }, [windowWidth]);
 
   const handleClick = (_e: MouseEvent<HTMLButtonElement>) => {
@@ -41,8 +45,13 @@ const Home: NextPage = () => {
       position: "top-center",
       style: { color: "#E26465" },
     });
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    void router.push(`listing/${selected!.name}`);
+    void router.push(
+      hotelType === CLASSIC_HOTEL
+        ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          `listing/${selected!.name}/${CLASSIC_HOTEL}`
+        : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          `listing/${selected!.name}/${HOURLY_HOTEL}`
+    );
   };
 
   return (
@@ -61,6 +70,8 @@ const Home: NextPage = () => {
           startDate={startDate}
           setStartDate={setStartDate}
           handleClick={handleClick}
+          hotelType={hotelType}
+          setHotelType={setHotelType}
         />
       ) : (
         <>

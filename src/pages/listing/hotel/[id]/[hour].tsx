@@ -6,19 +6,21 @@ import { IoRestaurantOutline } from "react-icons/io5";
 import { AiOutlineWifi } from "react-icons/ai";
 import { SlScreenDesktop } from "react-icons/sl";
 import { Inter } from "next/font/google";
+import { useRouter } from "next/router";
 import { Navbar } from "@/components/Navbar";
 import type { GetServerSidePropsContext, InferGetStaticPropsType } from "next";
+import { Fragment, useCallback, useEffect, useState } from "react";
+import { Transition, Dialog, RadioGroup } from "@headlessui/react";
+import superjson from "superjson";
+import { SignUpButton, useUser } from "@clerk/nextjs";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/api/root";
 import { prisma } from "@/server/db";
-import superjson from "superjson";
 import { api } from "@/utils/api";
 import { LoadingSpinner } from "@/components/LoadingSpinner";
 import Head from "next/head";
-import { RUPEE_SYMBOL } from "@/utils/constants";
-import { Fragment, useCallback, useEffect, useState } from "react";
-import { Transition, Dialog, RadioGroup } from "@headlessui/react";
-import { useRouter } from "next/router";
+import { HOURLY_HOTEL, RUPEE_SYMBOL } from "@/utils/constants";
+import { useHotelDetailsStore } from "@/utils/zustand.store";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -51,6 +53,11 @@ export default function Hotel(
   const router = useRouter();
   const hours = router.query.hour;
   const [isOpen, setIsOpen] = useState(false);
+  const { isLoaded, isSignedIn, user } = useUser();
+  const [setHotelId, setHotelType] = useHotelDetailsStore((state) => [
+    state.setHotelId,
+    state.setHotelType,
+  ]);
   const { data, isLoading, isError } = api.hotel.getById.useQuery({ id });
   const [option, setOption] = useState<{
     price: string | null;
@@ -106,26 +113,6 @@ export default function Hotel(
   function openModal() {
     setIsOpen(true);
   }
-
-  // const renderCorrectHour = (price: string) => {
-  //   switch (price) {
-  //     case data?.fourHourPrice:
-  //       return "4 hours";
-  //     case data?.eightHourPrice:
-  //       return "8 hours";
-  //     case data?.generalPrice:
-  //       return "24 hours";
-  //     default:
-  //       return "";
-  //   }
-  // };
-
-  // const handleRadioChange = (value: string) => {
-  //   setOption(value);
-  //   // // setPrice(renderCorrectPrice(option) as string);
-  //   // renderCorrectPrice(option);
-  // };
-
   return (
     data && (
       <>
@@ -205,9 +192,7 @@ export default function Hotel(
                               hour: "24",
                             }}
                             value={option}
-                            onChange={(value) => {
-                              setOption(value);
-                            }}
+                            onChange={setOption}
                           >
                             <RadioGroup.Label>
                               <span
@@ -222,7 +207,7 @@ export default function Hotel(
                             </RadioGroup.Label>
                             <RadioGroup.Option
                               className="mt-3 mb-1 w-full"
-                              value={{ price: data.fourHourPrice, hour: "4" }}
+                              value={{ price: data.generalPrice, hour: "24" }}
                             >
                               {({ active }) => (
                                 <p
@@ -232,7 +217,7 @@ export default function Hotel(
                                       : `ml-1 ${inter.className}`
                                   }
                                 >
-                                  4 hours
+                                  24 hours
                                 </p>
                               )}
                             </RadioGroup.Option>
@@ -254,7 +239,7 @@ export default function Hotel(
                             </RadioGroup.Option>
                             <RadioGroup.Option
                               className="mb-1 w-full"
-                              value={{ price: data.generalPrice, hour: "24" }}
+                              value={{ price: data.fourHourPrice, hour: "4" }}
                             >
                               {({ active }) => (
                                 <p
@@ -264,7 +249,7 @@ export default function Hotel(
                                       : `ml-1 ${inter.className}`
                                   }
                                 >
-                                  24 hours
+                                  4 hours
                                 </p>
                               )}
                             </RadioGroup.Option>
@@ -293,29 +278,49 @@ export default function Hotel(
         <div className="btm-nav btm-nav-lg rounded-t-md drop-shadow-2xl">
           <div>
             <span className="text-xs">
-              {option.hour && `${option.hour} hours`}
+              {data.hotelType === HOURLY_HOTEL
+                ? option.hour && `${option.hour} hours`
+                : ""}
             </span>
             <div className="flex items-center">
               <p className="text-xl font-bold">
-                {option.price && `${RUPEE_SYMBOL}${option.price}`}
+                {data.hotelType === HOURLY_HOTEL
+                  ? option.price && `${RUPEE_SYMBOL}${option.price}`
+                  : `${RUPEE_SYMBOL}${data.generalPrice}`}
               </p>
               <p className="ml-1 text-sm line-through">{`${RUPEE_SYMBOL}${data.originalPrice}`}</p>
             </div>
           </div>
-          <span
-            onClick={openModal}
-            className="tracking-tighter text-brand-primary"
-          >
-            Change Slot
-          </span>
-          <div className="w-full">
-            <button
-              // disabled={!price}
-              className="h-10 w-[85%] self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg disabled:bg-slate-500 disabled:text-slate-300 disabled:shadow-none"
+          {data.hotelType === HOURLY_HOTEL && (
+            <span
+              onClick={openModal}
+              className="tracking-tighter text-brand-primary"
             >
-              Book Now
-            </button>
-          </div>
+              Change Slot
+            </span>
+          )}
+          {isLoaded || isSignedIn ? (
+            <div className="w-full">
+              <button
+                onClick={() => {
+                  setHotelId(data.id);
+                  setHotelType(data.hotelType!);
+                  void router.push("/booking");
+                }}
+                className="h-10 w-[85%] self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg disabled:bg-slate-500 disabled:text-slate-300 disabled:shadow-none"
+              >
+                Book Now
+              </button>
+            </div>
+          ) : (
+            <SignUpButton>
+              <div className="w-full">
+                <button className="h-10 w-[85%] self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg disabled:bg-slate-500 disabled:text-slate-300 disabled:shadow-none">
+                  Sign Up and Book
+                </button>
+              </div>
+            </SignUpButton>
+          )}
         </div>
       </>
     )

@@ -4,10 +4,10 @@ import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
 
 export const hotelRouter = createTRPCRouter({
   getAllByCity: publicProcedure
-    .input(z.object({ city: z.string() }))
+    .input(z.object({ city: z.string(), hotelType: z.string() }))
     .query(async ({ input, ctx }) => {
       const hotels = await ctx.prisma.hotel.findMany({
-        where: { city: input.city },
+        where: { city: input.city, hotelType: input.hotelType },
         include: { images: true },
       });
       return hotels;

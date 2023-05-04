@@ -4,9 +4,9 @@ import { TbAirConditioning } from "react-icons/tb";
 import { IoRestaurantOutline } from "react-icons/io5";
 import { AiOutlineWifi } from "react-icons/ai";
 import { type MouseEvent } from "react";
-import { useRouter } from "next/router";
-import { RUPEE_SYMBOL } from "@/utils/constants";
-import { useHotelStore } from "@/utils/zustand.store";
+import { HOURLY_HOTEL, RUPEE_SYMBOL } from "@/utils/constants";
+import { toast } from "react-hot-toast";
+import Link from "next/link";
 
 interface Props {
   hotelId: string;
@@ -18,6 +18,7 @@ interface Props {
   fullDayPrice: string;
   ogPrice: string;
   facilities: string[];
+  hotelType: string;
 }
 
 export const Card = ({
@@ -30,9 +31,8 @@ export const Card = ({
   ogPrice,
   facilities,
   hotelId,
+  hotelType,
 }: Props) => {
-  const router = useRouter();
-  const [setPrice] = useHotelStore((state) => [state.setPrice]);
   const renderIcons = (item: string) => {
     switch (item) {
       case "wifi":
@@ -47,7 +47,7 @@ export const Card = ({
   };
 
   return (
-    <div className="mt-5 h-[28rem] w-full rounded-lg shadow-xl">
+    <div className="mt-5 w-full rounded-lg shadow-xl">
       <div className="h-[62%] w-full">
         <Image
           width={390}
@@ -58,7 +58,7 @@ export const Card = ({
               : "https://flexistay.blob.core.windows.net/flexistay-hotels/room2.webp"
           }
           alt="hotel"
-          className="h-full w-full rounded-t-lg"
+          className="h-full max-h-56 w-full rounded-t-lg"
         />
       </div>
       <div id="body" className="p-3">
@@ -80,52 +80,49 @@ export const Card = ({
             <TfiLocationPin />
             <p className="ml-1 text-slate-500">{area}</p>
           </div>
-          <p className="justify-self-end line-through">₹{ogPrice}</p>
+          {hotelType === HOURLY_HOTEL && (
+            <p className="justify-self-end line-through">₹{ogPrice}</p>
+          )}
         </div>
+        {hotelType === HOURLY_HOTEL ? (
+          <div className="mt-3 flex items-center justify-evenly">
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-slate-500">4 hours</span>
+              {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+              <p className="text-brand-primary">{`${RUPEE_SYMBOL}${fourHourPrice!}`}</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-slate-500">8 hours</span>
+              {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+              <p className="text-brand-primary">{`${RUPEE_SYMBOL}${eightHourPrice!}`}</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="text-xs text-slate-500">24 hours</span>
+              {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+              <p className="text-brand-primary">{`${RUPEE_SYMBOL}${fullDayPrice}`}</p>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-3 flex items-center justify-end">
+            <p className="text-xl font-semibold text-brand-primary">{`${RUPEE_SYMBOL}${fullDayPrice}`}</p>
+            <p className="ml-1 justify-self-end line-through">₹{ogPrice}</p>
+          </div>
+        )}
         <hr className="my-3 h-[1px] w-full bg-slate-400 px-6" />
         <div className="flex w-full items-center pb-2">
-          <div className="flex w-1/3 flex-col items-center justify-center px-1">
-            <p className="text-xs text-slate-500">4 hours</p>
+          <Link href={`/listing/hotel/${hotelId}/24`} className="w-full">
             <button
-              onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                e.preventDefault();
-                fourHourPrice && setPrice(fourHourPrice);
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                router.push(`hotel/${hotelId}/4`);
+              onClick={(_e: MouseEvent<HTMLButtonElement>) => {
+                toast("Please wait...", {
+                  position: "top-center",
+                  style: { color: "#E26465" },
+                });
               }}
               className="h-10 w-full self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg"
             >
-              {fourHourPrice && `${RUPEE_SYMBOL}${fourHourPrice}`}
+              Check it out
             </button>
-          </div>
-          <div className="flex w-1/3 flex-col items-center justify-center px-1">
-            <p className="text-xs text-slate-500">8 hours</p>
-            <button
-              onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                e.preventDefault();
-                eightHourPrice && setPrice(eightHourPrice);
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                router.push(`hotel/${hotelId}/8`);
-              }}
-              className="h-10 w-full self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg"
-            >
-              {eightHourPrice && `${RUPEE_SYMBOL}${eightHourPrice}`}
-            </button>
-          </div>
-          <div className="flex w-1/3 flex-col items-center justify-center px-1">
-            <p className="text-xs text-slate-500">24 hours</p>
-            <button
-              onClick={(e: MouseEvent<HTMLButtonElement>) => {
-                e.preventDefault();
-                setPrice(fullDayPrice);
-                // eslint-disable-next-line @typescript-eslint/no-floating-promises
-                router.push(`hotel/${hotelId}/24`);
-              }}
-              className="h-10 w-full self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg"
-            >
-              {RUPEE_SYMBOL + fullDayPrice}
-            </button>
-          </div>
+          </Link>
         </div>
       </div>
     </div>
