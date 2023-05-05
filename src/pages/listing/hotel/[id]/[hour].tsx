@@ -286,7 +286,8 @@ export default function Hotel(
               <p className="text-xl font-bold">
                 {data.hotelType === HOURLY_HOTEL
                   ? option.price && `${RUPEE_SYMBOL}${option.price}`
-                  : `${RUPEE_SYMBOL}${data.generalPrice}`}
+                  : // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion, @typescript-eslint/no-non-null-assertion
+                    `${RUPEE_SYMBOL}${data.generalPrice!.toString()}`}
               </p>
               <p className="ml-1 text-sm line-through">{`${RUPEE_SYMBOL}${data.originalPrice}`}</p>
             </div>
