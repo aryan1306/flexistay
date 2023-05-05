@@ -53,7 +53,7 @@ export default function Hotel(
   const router = useRouter();
   const hours = router.query.hour;
   const [isOpen, setIsOpen] = useState(false);
-  const { isLoaded, isSignedIn, user } = useUser();
+  const { isLoaded, isSignedIn } = useUser();
   const [setHotelId, setHotelType] = useHotelDetailsStore((state) => [
     state.setHotelId,
     state.setHotelType,
@@ -304,6 +304,7 @@ export default function Hotel(
               <button
                 onClick={() => {
                   setHotelId(data.id);
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   setHotelType(data.hotelType!);
                   void router.push("/booking");
                 }}

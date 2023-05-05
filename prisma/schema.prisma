@@ -26,11 +26,12 @@ model Hotel {
   hotelType String?
   fourHourPrice String?
   eightHourPrice String?
-  generalPrice String
+  generalPrice String?
   originalPrice String
   images Images[]
   bookings Booking[]
   admin HotelAdmin?
+  roomType RoomType[]
 
   @@index([city], type: Hash)
   @@index([district])
@@ -75,4 +76,13 @@ model Referral {
   code String @unique
   name String
   booking Booking[]
+}
+
+model RoomType {
+  id String @id @default(cuid())
+  isACRoom Boolean
+  roomPrice String
+  facilites String[]
+  hotelId String
+  hotel Hotel @relation(fields: [hotelId], references: [id])
 }

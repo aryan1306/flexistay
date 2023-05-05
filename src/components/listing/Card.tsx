@@ -15,7 +15,7 @@ interface Props {
   area: string;
   fourHourPrice: string | null;
   eightHourPrice: string | null;
-  fullDayPrice: string;
+  fullDayPrice: string | null;
   ogPrice: string;
   facilities: string[];
   hotelType: string;
@@ -99,12 +99,13 @@ export const Card = ({
             <div className="flex flex-col items-center">
               <span className="text-xs text-slate-500">24 hours</span>
               {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
-              <p className="text-brand-primary">{`${RUPEE_SYMBOL}${fullDayPrice}`}</p>
+              <p className="text-brand-primary">{`${RUPEE_SYMBOL}${fullDayPrice!}`}</p>
             </div>
           </div>
         ) : (
           <div className="mt-3 flex items-center justify-end">
-            <p className="text-xl font-semibold text-brand-primary">{`${RUPEE_SYMBOL}${fullDayPrice}`}</p>
+            {/* eslint-disable-next-line @typescript-eslint/no-non-null-assertion */}
+            <p className="text-xl font-semibold text-brand-primary">{`${RUPEE_SYMBOL}${fullDayPrice!}`}</p>
             <p className="ml-1 justify-self-end line-through">₹{ogPrice}</p>
           </div>
         )}

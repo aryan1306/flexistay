@@ -24,7 +24,7 @@ export const Navbar = ({ mobile = false, dropShadow = true }: Props) => {
         />
         <Link href="/">
           <h2 className="mt-1 self-center text-4xl font-semibold text-white">
-            FlexiStay
+            Flexistay
           </h2>
         </Link>
       </div>

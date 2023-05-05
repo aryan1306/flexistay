@@ -3,7 +3,6 @@ import { Navbar } from "@/components/Navbar";
 import type { Images, Hotel } from "@prisma/client";
 import { RiSortDesc } from "react-icons/ri";
 import { Toaster } from "react-hot-toast";
-import { CLASSIC_HOTEL, HOURLY_HOTEL } from "@/utils/constants";
 
 interface Props {
   data:
@@ -42,6 +41,7 @@ export const MobileListing = ({ data, hotelType }: Props) => {
                   ogPrice={item.originalPrice}
                   facilities={item.facilities}
                   hotelId={item.id}
+                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   hotelType={item.hotelType!}
                 />
               ))}
