@@ -137,7 +137,7 @@ export default function Hotel(
                   src={img.url}
                   width={290}
                   height={190}
-                  className="rounded-box"
+                  className="rounded-box max-h-52 min-h-[13rem]"
                   alt={data.name}
                 />
               </div>
