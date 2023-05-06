@@ -19,6 +19,7 @@ interface Props {
   ogPrice: string;
   facilities: string[];
   hotelType: string;
+  requestedHotelType: string;
 }
 
 export const Card = ({
@@ -32,6 +33,7 @@ export const Card = ({
   facilities,
   hotelId,
   hotelType,
+  requestedHotelType,
 }: Props) => {
   const renderIcons = (item: string) => {
     switch (item) {
@@ -80,11 +82,12 @@ export const Card = ({
             <TfiLocationPin />
             <p className="ml-1 text-slate-500">{area}</p>
           </div>
-          {hotelType === HOURLY_HOTEL && (
-            <p className="justify-self-end line-through">₹{ogPrice}</p>
-          )}
+          {hotelType === HOURLY_HOTEL &&
+            requestedHotelType === HOURLY_HOTEL && (
+              <p className="justify-self-end line-through">₹{ogPrice}</p>
+            )}
         </div>
-        {hotelType === HOURLY_HOTEL ? (
+        {hotelType === HOURLY_HOTEL && requestedHotelType === HOURLY_HOTEL ? (
           <div className="mt-3 flex items-center justify-evenly">
             <div className="flex flex-col items-center">
               <span className="text-xs text-slate-500">4 hours</span>
@@ -111,7 +114,10 @@ export const Card = ({
         )}
         <hr className="my-3 h-[1px] w-full bg-slate-400 px-6" />
         <div className="flex w-full items-center pb-2">
-          <Link href={`/listing/hotel/${hotelId}/24`} className="w-full">
+          <Link
+            href={`/listing/hotel/${hotelId}/${requestedHotelType}/24`}
+            className="w-full"
+          >
             <button
               onClick={(_e: MouseEvent<HTMLButtonElement>) => {
                 toast("Please wait...", {

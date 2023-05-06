@@ -8,7 +8,6 @@ import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { prisma } from "@/server/db";
 import type { GetServerSidePropsContext, InferGetStaticPropsType } from "next";
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import superjson from "superjson";
@@ -18,7 +17,6 @@ export default function Listing(
 ) {
   const { city, hotelType } = props;
   const [windowWidth, setWindowWidth] = useState(0);
-  const router = useRouter();
 
   useEffect(() => {
     const width = window.innerWidth;
@@ -34,8 +32,6 @@ export default function Listing(
   });
 
   if (isLoading) return <LoadingSpinner />;
-
-  console.log(router.query);
 
   return (
     <>
@@ -68,7 +64,6 @@ export const getStaticProps = async (context: GetServerSidePropsContext) => {
     ctx: { prisma },
     transformer: superjson,
   });
-  console.log("contexxxxxxxxtttttttttttt", context);
   const city = context.params?.city as string;
   const hotelType = context.params?.hotelType as string;
   await ssg.hotel.getAllByCity.prefetch({ city, hotelType });

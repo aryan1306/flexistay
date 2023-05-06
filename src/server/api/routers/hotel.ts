@@ -1,13 +1,21 @@
 import { z } from "zod";
 
 import { createTRPCRouter, publicProcedure } from "@/server/api/trpc";
+import { HOURLY_HOTEL } from "@/utils/constants";
 
 export const hotelRouter = createTRPCRouter({
   getAllByCity: publicProcedure
     .input(z.object({ city: z.string(), hotelType: z.string() }))
     .query(async ({ input, ctx }) => {
+      if (input.hotelType === HOURLY_HOTEL) {
+        const hotels = await ctx.prisma.hotel.findMany({
+          where: { city: input.city, hotelType: input.hotelType },
+          include: { images: true },
+        });
+        return hotels;
+      }
       const hotels = await ctx.prisma.hotel.findMany({
-        where: { city: input.city, hotelType: input.hotelType },
+        where: { city: input.city },
         include: { images: true },
       });
       return hotels;
