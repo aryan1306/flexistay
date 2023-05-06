@@ -128,7 +128,10 @@ export default function Hotel(
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */}
             {data?.images.map((img) => (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-              <div key={img.id} className="carousel-item max-h-52">
+              <div
+                key={img.id}
+                className="carousel-item max-h-52 min-h-[13rem]"
+              >
                 <Image
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
                   src={img.url}
