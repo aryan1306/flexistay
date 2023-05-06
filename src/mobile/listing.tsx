@@ -14,7 +14,6 @@ interface Props {
 }
 
 export const MobileListing = ({ data, hotelType }: Props) => {
-  console.log({ hotelType });
   return (
     <>
       <Navbar mobile={true} />
@@ -24,27 +23,24 @@ export const MobileListing = ({ data, hotelType }: Props) => {
             <RiSortDesc /> <p className="ml-2">Sort and Filter</p>
           </div>
           <div className="mx-3">
-            {data
-              ?.filter((item) => {
-                return hotelType === item.hotelType;
-              })
-              .map((item) => (
-                <Card
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unsafe-member-access
-                  src={item.images[0]!.url}
-                  key={item.id}
-                  name={item.name}
-                  area={item.district}
-                  fourHourPrice={item.fourHourPrice}
-                  eightHourPrice={item.eightHourPrice}
-                  fullDayPrice={item.generalPrice}
-                  ogPrice={item.originalPrice}
-                  facilities={item.facilities}
-                  hotelId={item.id}
-                  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                  hotelType={item.hotelType!}
-                />
-              ))}
+            {data?.map((item) => (
+              <Card
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-non-null-assertion, @typescript-eslint/no-unsafe-member-access
+                src={item.images[0]!.url}
+                key={item.id}
+                name={item.name}
+                area={item.district}
+                fourHourPrice={item.fourHourPrice}
+                eightHourPrice={item.eightHourPrice}
+                fullDayPrice={item.generalPrice}
+                ogPrice={item.originalPrice}
+                facilities={item.facilities}
+                hotelId={item.id}
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                hotelType={item.hotelType!}
+                requestedHotelType={hotelType}
+              />
+            ))}
           </div>
         </div>
         <Toaster />

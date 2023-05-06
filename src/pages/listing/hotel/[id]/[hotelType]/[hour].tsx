@@ -51,7 +51,7 @@ export default function Hotel(
 ) {
   const { id } = props;
   const router = useRouter();
-  const hours = router.query.hour;
+  const { hour: hours, hotelType: requestedHotelType } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const { isLoaded, isSignedIn } = useUser();
   const [setHotelId, setHotelType] = useHotelDetailsStore((state) => [
@@ -128,13 +128,16 @@ export default function Hotel(
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */}
             {data?.images.map((img) => (
               // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-              <div key={img.id} className="carousel-item">
+              <div
+                key={img.id}
+                className="carousel-item max-h-52 min-h-[13rem]"
+              >
                 <Image
                   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
                   src={img.url}
                   width={290}
                   height={190}
-                  className="rounded-box"
+                  className="rounded-box max-h-52 min-h-[13rem]"
                   alt={data.name}
                 />
               </div>
@@ -278,13 +281,15 @@ export default function Hotel(
         <div className="btm-nav btm-nav-lg rounded-t-md drop-shadow-2xl">
           <div>
             <span className="text-xs">
-              {data.hotelType === HOURLY_HOTEL
+              {data.hotelType === HOURLY_HOTEL &&
+              requestedHotelType === HOURLY_HOTEL
                 ? option.hour && `${option.hour} hours`
                 : ""}
             </span>
             <div className="flex items-center">
               <p className="text-xl font-bold">
-                {data.hotelType === HOURLY_HOTEL
+                {data.hotelType === HOURLY_HOTEL &&
+                requestedHotelType === HOURLY_HOTEL
                   ? option.price && `${RUPEE_SYMBOL}${option.price}`
                   : // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion, @typescript-eslint/no-non-null-assertion
                     `${RUPEE_SYMBOL}${data.generalPrice!.toString()}`}
@@ -292,14 +297,15 @@ export default function Hotel(
               <p className="ml-1 text-sm line-through">{`${RUPEE_SYMBOL}${data.originalPrice}`}</p>
             </div>
           </div>
-          {data.hotelType === HOURLY_HOTEL && (
-            <span
-              onClick={openModal}
-              className="tracking-tighter text-brand-primary"
-            >
-              Change Slot
-            </span>
-          )}
+          {data.hotelType === HOURLY_HOTEL &&
+            requestedHotelType === HOURLY_HOTEL && (
+              <span
+                onClick={openModal}
+                className="tracking-tighter text-brand-primary"
+              >
+                Change Slot
+              </span>
+            )}
           {isLoaded || isSignedIn ? (
             <div className="w-full">
               <button
