@@ -134,7 +134,9 @@ export const Navbar = ({
             </Menu>
           </SignedOut>
         </>
-      ) : null}
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

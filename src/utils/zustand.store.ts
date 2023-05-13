@@ -8,6 +8,11 @@ interface HotelDetailsState {
   setHotelType: (hotelType: string) => void;
 }
 
+interface SearchDateProps {
+  date: string;
+  setDate: (date: string) => void;
+}
+
 //hotel id and type to review booking
 export const useHotelDetailsStore = create<HotelDetailsState>()(
   devtools(
@@ -20,6 +25,20 @@ export const useHotelDetailsStore = create<HotelDetailsState>()(
       }),
       {
         name: "z/hotelDetails",
+        storage: createJSONStorage(() => sessionStorage),
+      }
+    )
+  )
+);
+export const useSearchDateStore = create<SearchDateProps>()(
+  devtools(
+    persist(
+      (set) => ({
+        date: "",
+        setDate: (date) => set({ date }),
+      }),
+      {
+        name: "z/SearchDate",
         storage: createJSONStorage(() => sessionStorage),
       }
     )

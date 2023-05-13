@@ -13,7 +13,7 @@ import type { GetServerSidePropsContext, InferGetStaticPropsType } from "next";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Transition, Dialog, RadioGroup } from "@headlessui/react";
 import superjson from "superjson";
-import { SignedIn, SignedOut, SignUpButton, useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignUpButton } from "@clerk/nextjs";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/api/root";
 import { prisma } from "@/server/db";
@@ -55,7 +55,6 @@ export default function Hotel(
   const { hour: hours, hotelType: requestedHotelType } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const [isACRoomSelected, setIsACRoomSelected] = useState(false);
-  const { isLoaded, isSignedIn } = useUser();
   const [setHotelId, setHotelType] = useHotelDetailsStore((state) => [
     state.setHotelId,
     state.setHotelType,
@@ -125,7 +124,7 @@ export default function Hotel(
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Navbar mobile={true} isListingPage={false} />
-        <div className="mx-3 h-full overflow-auto">
+        <div className="mx-3 h-screen overflow-auto">
           <div className="carousel-center carousel rounded-box mt-6 max-w-md space-x-4 bg-red-100 p-4 md:w-full">
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */}
             {data?.images.map((img) => (
@@ -375,7 +374,7 @@ export default function Hotel(
             <SignUpButton>
               <div className="w-full">
                 <button className="h-10 w-[85%] self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg disabled:bg-slate-500 disabled:text-slate-300 disabled:shadow-none">
-                  Sign Up and Book
+                  Proceed
                 </button>
               </div>
             </SignUpButton>

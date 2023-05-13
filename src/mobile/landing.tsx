@@ -1,8 +1,6 @@
 import { Navbar } from "@/components/Navbar";
 import { DropDown } from "@/components/Dropdown";
 import { CLASSIC_HOTEL, HOURLY_HOTEL } from "@/utils/constants";
-import ReactDatePicker from "react-datepicker";
-import { addDays } from "date-fns";
 import {
   TbClockEdit,
   TbCurrencyRupee,
@@ -14,14 +12,12 @@ import { Footer } from "@/components/landing/footer";
 import { type MouseEvent } from "react";
 import { Toaster } from "react-hot-toast";
 import { RadioGroup } from "@headlessui/react";
+import { DatePicker } from "@/components/ui/DatePicker";
 
 interface Props {
   setter: (value: { name: string } | undefined) => void;
   value: { name: string } | undefined;
   list: { name: string }[];
-  startDate: Date;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setStartDate: any;
   handleClick: (e: MouseEvent<HTMLButtonElement>) => void;
   hotelType: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -32,8 +28,6 @@ export const Landing = ({
   setter,
   value,
   list,
-  startDate,
-  setStartDate,
   handleClick,
   hotelType,
   setHotelType,
@@ -101,23 +95,7 @@ export const Landing = ({
               </div>
             </RadioGroup>
             <DropDown setter={setter} value={value} list={list} mobile={true} />
-            <ReactDatePicker
-              wrapperClassName="h-20 w-full"
-              className="w-full"
-              customInput={
-                <input className="relative mt-5 h-20 w-full cursor-pointer rounded-lg bg-white py-2 pl-3 pr-10 shadow-md focus:outline-none focus-visible:ring-white sm:text-sm" />
-              }
-              minDate={
-                new Date().getHours() === 23 && new Date().getMinutes() >= 31
-                  ? addDays(new Date(), 1)
-                  : new Date()
-              }
-              maxDate={addDays(new Date(), 60)}
-              selected={startDate}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-non-null-assertion
-              onChange={(date) => setStartDate(date!)}
-              dateFormat="PP"
-            />
+            <DatePicker />
           </div>
           <div className="mt-10 flex justify-center">
             <button

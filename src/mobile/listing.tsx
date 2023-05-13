@@ -16,7 +16,7 @@ interface Props {
 export const MobileListing = ({ data, hotelType }: Props) => {
   return (
     <>
-      <Navbar mobile={true} />
+      <Navbar mobile={true} isListingPage={true} />
       <main className="h-screen w-full">
         <div id="sort-and-filter" className="sticky mb-5 h-14 shadow-md">
           <div className="flex h-full items-center justify-center text-lg">

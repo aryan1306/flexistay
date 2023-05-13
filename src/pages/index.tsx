@@ -3,8 +3,8 @@ import Head from "next/head";
 import Image from "next/image";
 import { TypeAnimation } from "react-type-animation";
 import { type MouseEvent, useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
-import { addDays, setHours, setMinutes } from "date-fns";
+import { DatePicker } from "@/components/ui/DatePicker";
+import { setHours, setMinutes } from "date-fns";
 import toast from "react-hot-toast";
 
 import CoverImg from "../../public/cover-img.jpg";
@@ -18,6 +18,7 @@ import { Landing } from "@/mobile/landing";
 import { CLASSIC_HOTEL, HOURLY_HOTEL, MIN_WIDTH } from "@/utils/constants";
 import { cities } from "@/utils/constants";
 import { useRouter } from "next/router";
+import { useSearchDateStore } from "@/utils/zustand.store";
 
 const date = new Date();
 
@@ -25,12 +26,13 @@ const Home: NextPage = () => {
   const router = useRouter();
   const [selected, setSelected] = useState(cities[0]);
   const [hotelType, setHotelType] = useState(CLASSIC_HOTEL);
-  const [startDate, setStartDate] = useState(
+  const [startDate] = useState(
     date.getMinutes() > 30
       ? setHours(setMinutes(new Date(), 0), date.getHours() + 1)
       : setHours(setMinutes(new Date(), 30), date.getHours())
   );
   const [windowWidth, setWindowWidth] = useState(0);
+  const [setDate] = useSearchDateStore((state) => [state.setDate]);
 
   useEffect(() => {
     const width = window.innerWidth;
@@ -45,6 +47,7 @@ const Home: NextPage = () => {
       position: "top-center",
       style: { color: "#E26465" },
     });
+    setDate(String(startDate));
     void router.push(
       hotelType === CLASSIC_HOTEL
         ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -67,8 +70,6 @@ const Home: NextPage = () => {
           setter={setSelected}
           value={selected}
           list={cities}
-          startDate={startDate}
-          setStartDate={setStartDate}
           handleClick={handleClick}
           hotelType={hotelType}
           setHotelType={setHotelType}
@@ -112,24 +113,7 @@ const Home: NextPage = () => {
               <div className="flex w-1/2 items-center justify-center">
                 <DropDown setter={setSelected} value={selected} list={cities} />
                 <div className="customDatePickerWidth w-1/2">
-                  <DatePicker
-                    wrapperClassName="h-20 w-full"
-                    className="w-full"
-                    customInput={
-                      <input className="relative mt-[0.1rem] h-20 w-full cursor-pointer rounded-r-lg bg-white py-2 pl-3 pr-10 text-center shadow-md focus:outline-none focus-visible:ring-white sm:text-sm" />
-                    }
-                    minDate={
-                      new Date().getHours() === 23 &&
-                      new Date().getMinutes() >= 31
-                        ? addDays(new Date(), 1)
-                        : new Date()
-                    }
-                    maxDate={addDays(new Date(), 60)}
-                    selected={startDate}
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    onChange={(date) => setStartDate(date!)}
-                    dateFormat="PP"
-                  />
+                  <DatePicker />
                 </div>
               </div>
             </div>
