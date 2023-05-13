@@ -36,7 +36,7 @@ export const hotelRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.hotel.findUnique({
         where: { id: input.id },
-        include: { images: true },
+        include: { images: true, roomType: true },
       });
     }),
   getImagesByHotelId: publicProcedure

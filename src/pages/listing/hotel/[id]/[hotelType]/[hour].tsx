@@ -7,12 +7,13 @@ import { AiOutlineWifi } from "react-icons/ai";
 import { SlScreenDesktop } from "react-icons/sl";
 import { Inter } from "next/font/google";
 import { useRouter } from "next/router";
+import { TbCircleCheck, TbCircle } from "react-icons/tb";
 import { Navbar } from "@/components/Navbar";
 import type { GetServerSidePropsContext, InferGetStaticPropsType } from "next";
 import { Fragment, useCallback, useEffect, useState } from "react";
 import { Transition, Dialog, RadioGroup } from "@headlessui/react";
 import superjson from "superjson";
-import { SignUpButton, useUser } from "@clerk/nextjs";
+import { SignedIn, SignedOut, SignUpButton, useUser } from "@clerk/nextjs";
 import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import { appRouter } from "@/server/api/root";
 import { prisma } from "@/server/db";
@@ -53,6 +54,7 @@ export default function Hotel(
   const router = useRouter();
   const { hour: hours, hotelType: requestedHotelType } = router.query;
   const [isOpen, setIsOpen] = useState(false);
+  const [isACRoomSelected, setIsACRoomSelected] = useState(false);
   const { isLoaded, isSignedIn } = useUser();
   const [setHotelId, setHotelType] = useHotelDetailsStore((state) => [
     state.setHotelId,
@@ -122,8 +124,8 @@ export default function Hotel(
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <Navbar mobile={true} />
-        <div className="mx-3">
+        <Navbar mobile={true} isListingPage={false} />
+        <div className="mx-3 h-full overflow-auto">
           <div className="carousel-center carousel rounded-box mt-6 max-w-md space-x-4 bg-red-100 p-4 md:w-full">
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */}
             {data?.images.map((img) => (
@@ -264,7 +266,7 @@ export default function Hotel(
                 </div>
               </Dialog>
             </Transition>
-            <h1 className="text-xl font-semibold">Amenities</h1>
+            <h2 className="text-xl font-semibold">Amenities</h2>
             <div className="my-4 grid grid-flow-row grid-cols-2 place-items-start">
               {data?.facilities.map((item) => (
                 <div key={item} className="mb-2 flex items-center">
@@ -276,6 +278,54 @@ export default function Hotel(
               ))}
             </div>
             <hr className="my-5 bg-slate-400" />
+            {!(
+              data.hotelType === HOURLY_HOTEL &&
+              requestedHotelType === HOURLY_HOTEL
+            ) && (
+              <>
+                <h2 className="text-xl font-semibold">Select your Room</h2>
+                <RadioGroup
+                  value={isACRoomSelected}
+                  onChange={setIsACRoomSelected}
+                >
+                  <RadioGroup.Label className={"text-sm text-slate-50"}>
+                    Hotel Type
+                  </RadioGroup.Label>
+                  <div className="mt-1 mb-3 flex justify-start">
+                    <RadioGroup.Option
+                      className="checked mr-2 rounded-md bg-white px-3 py-2 shadow-md"
+                      value={true}
+                    >
+                      {({ checked }) => (
+                        <div className="flex items-center justify-center">
+                          <span>AC Room</span>
+                          {checked ? (
+                            <TbCircleCheck className="ml-2 rounded-full bg-brand-primary text-xl text-white" />
+                          ) : (
+                            <TbCircle className="ml-2 text-lg" />
+                          )}
+                        </div>
+                      )}
+                    </RadioGroup.Option>
+                    <RadioGroup.Option
+                      className="checked rounded-md bg-white px-3 py-2 shadow-md"
+                      value={false}
+                    >
+                      {({ checked }) => (
+                        <div className="flex items-center justify-center">
+                          <span>Non-AC Room</span>
+                          {checked ? (
+                            <TbCircleCheck className="ml-2 rounded-full bg-brand-primary text-xl text-white" />
+                          ) : (
+                            <TbCircle className="ml-2" />
+                          )}
+                        </div>
+                      )}
+                    </RadioGroup.Option>
+                  </div>
+                </RadioGroup>
+              </>
+            )}
           </div>
         </div>
         <div className="btm-nav btm-nav-lg rounded-t-md drop-shadow-2xl">
@@ -306,7 +356,7 @@ export default function Hotel(
                 Change Slot
               </span>
             )}
-          {isLoaded || isSignedIn ? (
+          <SignedIn>
             <div className="w-full">
               <button
                 onClick={() => {
@@ -320,7 +370,8 @@ export default function Hotel(
                 Book Now
               </button>
             </div>
-          ) : (
+          </SignedIn>
+          <SignedOut>
             <SignUpButton>
               <div className="w-full">
                 <button className="h-10 w-[85%] self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg disabled:bg-slate-500 disabled:text-slate-300 disabled:shadow-none">
@@ -328,7 +379,7 @@ export default function Hotel(
                 </button>
               </div>
             </SignUpButton>
-          )}
+          </SignedOut>
         </div>
       </>
     )

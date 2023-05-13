@@ -8,3 +8,6 @@
 .btn-brand-outline {
   @apply rounded-md border-2 border-brand-primary bg-slate-50 p-5 text-brand-primary shadow-lg;
 }
+.btm-nav {
+  @apply sticky;
+}

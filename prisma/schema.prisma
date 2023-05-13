@@ -28,6 +28,8 @@ model Hotel {
   eightHourPrice String?
   generalPrice String?
   originalPrice String
+  nonACPrice String?
+  nonACOgPrice String?
   images Images[]
   bookings Booking[]
   admin HotelAdmin?

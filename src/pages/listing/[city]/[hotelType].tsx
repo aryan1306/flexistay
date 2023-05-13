@@ -48,7 +48,7 @@ export default function Listing(
         <MobileListing data={data} hotelType={hotelType} />
       ) : (
         <>
-          <Navbar />
+          <Navbar isListingPage={true} />
           <main>
             <h1>hi</h1>
           </main>
