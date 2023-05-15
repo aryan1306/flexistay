@@ -32,8 +32,12 @@ export const MobileListing = ({ data, hotelType }: Props) => {
                 area={item.district}
                 fourHourPrice={item.fourHourPrice}
                 eightHourPrice={item.eightHourPrice}
-                fullDayPrice={item.generalPrice}
-                ogPrice={item.originalPrice}
+                fullDayPrice={
+                  item.nonACPrice ? item.nonACPrice : item.generalPrice
+                }
+                ogPrice={
+                  item.nonACOgPrice ? item.nonACOgPrice : item.originalPrice
+                }
                 facilities={item.facilities}
                 hotelId={item.id}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

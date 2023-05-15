@@ -54,7 +54,7 @@ export default function Hotel(
   const router = useRouter();
   const { hour: hours, hotelType: requestedHotelType } = router.query;
   const [isOpen, setIsOpen] = useState(false);
-  const [isACRoomSelected, setIsACRoomSelected] = useState(false);
+  const [isACRoomSelected, setIsACRoomSelected] = useState(true);
   const [setHotelId, setHotelType] = useHotelDetailsStore((state) => [
     state.setHotelId,
     state.setHotelType,
@@ -82,6 +82,15 @@ export default function Hotel(
     },
     [data]
   );
+
+  useEffect(() => {
+    if (data?.nonACPrice) {
+      setIsACRoomSelected(false);
+    }
+    return () => {
+      setIsACRoomSelected(true);
+    };
+  }, [data?.nonACPrice]);
 
   useEffect(() => {
     renderCorrectPrice(hours as string);
@@ -124,7 +133,7 @@ export default function Hotel(
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Navbar mobile={true} isListingPage={false} />
-        <div className="mx-3 h-screen overflow-auto">
+        <div className="mx-3 h-screen">
           <div className="carousel-center carousel rounded-box mt-6 max-w-md space-x-4 bg-red-100 p-4 md:w-full">
             {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */}
             {data?.images.map((img) => (
@@ -265,6 +274,57 @@ export default function Hotel(
                 </div>
               </Dialog>
             </Transition>
+            {!(
+              data.hotelType === HOURLY_HOTEL &&
+              requestedHotelType === HOURLY_HOTEL
+            ) &&
+              data.nonACOgPrice && (
+                <>
+                  <h2 className="text-xl font-semibold">Select your Room</h2>
+                  <RadioGroup
+                    defaultValue={data.nonACPrice ? false : true}
+                    value={isACRoomSelected}
+                    onChange={setIsACRoomSelected}
+                    className="mb-8"
+                  >
+                    <RadioGroup.Label className={"text-sm text-slate-50"}>
+                      Hotel Type
+                    </RadioGroup.Label>
+                    <div className="mt-1 mb-3 flex justify-start">
+                      <RadioGroup.Option
+                        className="checked rounded-md bg-white px-3 py-2 shadow-md"
+                        value={false}
+                      >
+                        {({ checked }) => (
+                          <div className="flex items-center justify-center">
+                            <span>Non-AC Room</span>
+                            {checked ? (
+                              <TbCircleCheck className="ml-2 rounded-full bg-brand-primary text-xl text-white" />
+                            ) : (
+                              <TbCircle className="ml-2" />
+                            )}
+                          </div>
+                        )}
+                      </RadioGroup.Option>
+                      <RadioGroup.Option
+                        className="checked mr-2 rounded-md bg-white px-3 py-2 shadow-md"
+                        value={true}
+                      >
+                        {({ checked }) => (
+                          <div className="flex items-center justify-center">
+                            <span>AC Room</span>
+                            {checked ? (
+                              <TbCircleCheck className="ml-2 rounded-full bg-brand-primary text-xl text-white" />
+                            ) : (
+                              <TbCircle className="ml-2 text-lg" />
+                            )}
+                          </div>
+                        )}
+                      </RadioGroup.Option>
+                    </div>
+                  </RadioGroup>
+                </>
+              )}
             <h2 className="text-xl font-semibold">Amenities</h2>
             <div className="my-4 grid grid-flow-row grid-cols-2 place-items-start">
               {data?.facilities.map((item) => (
@@ -277,54 +337,6 @@ export default function Hotel(
               ))}
             </div>
             <hr className="my-5 bg-slate-400" />
-            {!(
-              data.hotelType === HOURLY_HOTEL &&
-              requestedHotelType === HOURLY_HOTEL
-            ) && (
-              <>
-                <h2 className="text-xl font-semibold">Select your Room</h2>
-                <RadioGroup
-                  value={isACRoomSelected}
-                  onChange={setIsACRoomSelected}
-                >
-                  <RadioGroup.Label className={"text-sm text-slate-50"}>
-                    Hotel Type
-                  </RadioGroup.Label>
-                  <div className="mt-1 mb-3 flex justify-start">
-                    <RadioGroup.Option
-                      className="checked mr-2 rounded-md bg-white px-3 py-2 shadow-md"
-                      value={true}
-                    >
-                      {({ checked }) => (
-                        <div className="flex items-center justify-center">
-                          <span>AC Room</span>
-                          {checked ? (
-                            <TbCircleCheck className="ml-2 rounded-full bg-brand-primary text-xl text-white" />
-                          ) : (
-                            <TbCircle className="ml-2 text-lg" />
-                          )}
-                        </div>
-                      )}
-                    </RadioGroup.Option>
-                    <RadioGroup.Option
-                      className="checked rounded-md bg-white px-3 py-2 shadow-md"
-                      value={false}
-                    >
-                      {({ checked }) => (
-                        <div className="flex items-center justify-center">
-                          <span>Non-AC Room</span>
-                          {checked ? (
-                            <TbCircleCheck className="ml-2 rounded-full bg-brand-primary text-xl text-white" />
-                          ) : (
-                            <TbCircle className="ml-2" />
-                          )}
-                        </div>
-                      )}
-                    </RadioGroup.Option>
-                  </div>
-                </RadioGroup>
-              </>
-            )}
           </div>
         </div>
         <div className="btm-nav btm-nav-lg rounded-t-md drop-shadow-2xl">
@@ -340,10 +352,20 @@ export default function Hotel(
                 {data.hotelType === HOURLY_HOTEL &&
                 requestedHotelType === HOURLY_HOTEL
                   ? option.price && `${RUPEE_SYMBOL}${option.price}`
+                  : isACRoomSelected
+                  ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion, @typescript-eslint/no-non-null-assertion
+                    `${RUPEE_SYMBOL}${data.generalPrice!.toString()}`
                   : // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion, @typescript-eslint/no-non-null-assertion
-                    `${RUPEE_SYMBOL}${data.generalPrice!.toString()}`}
+                    data.nonACPrice &&
+                    `${RUPEE_SYMBOL}${data.nonACPrice.toString()}`}
               </p>
-              <p className="ml-1 text-sm line-through">{`${RUPEE_SYMBOL}${data.originalPrice}`}</p>
+              <p className="ml-1 text-sm line-through">
+                {isACRoomSelected
+                  ? `${RUPEE_SYMBOL}${data.originalPrice}`
+                  : // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    data.nonACOgPrice &&
+                    `${RUPEE_SYMBOL}${data.nonACOgPrice.toString()}`}
+              </p>
             </div>
           </div>
           {data.hotelType === HOURLY_HOTEL &&
