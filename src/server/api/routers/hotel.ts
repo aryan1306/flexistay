@@ -46,4 +46,8 @@ export const hotelRouter = createTRPCRouter({
         where: { hotelId: input.hotelId },
       });
     }),
+  getAll: publicProcedure.query(async ({ ctx }) => {
+    const hotels = await ctx.prisma.hotel.findMany({ take: 25 });
+    return hotels;
+  }),
 });
