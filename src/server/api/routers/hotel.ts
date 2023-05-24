@@ -10,13 +10,13 @@ export const hotelRouter = createTRPCRouter({
       if (input.hotelType === HOURLY_HOTEL) {
         const hotels = await ctx.prisma.hotel.findMany({
           where: { city: input.city, hotelType: input.hotelType },
-          include: { images: true },
+          include: { images: true, facilities: true },
         });
         return hotels;
       }
       const hotels = await ctx.prisma.hotel.findMany({
         where: { city: input.city },
-        include: { images: true },
+        include: { images: true, facilities: true },
       });
       return hotels;
     }),
@@ -27,7 +27,7 @@ export const hotelRouter = createTRPCRouter({
         where: {
           district: { in: input.district },
         },
-        include: { images: true },
+        include: { images: true, facilities: true },
       });
       return hotels;
     }),
@@ -36,7 +36,7 @@ export const hotelRouter = createTRPCRouter({
     .query(async ({ input, ctx }) => {
       return await ctx.prisma.hotel.findUnique({
         where: { id: input.id },
-        include: { images: true, roomType: true },
+        include: { images: true, facilities: true },
       });
     }),
   getImagesByHotelId: publicProcedure

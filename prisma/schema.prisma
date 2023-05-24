@@ -6,8 +6,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider = "mysql"
+  url = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Hotel {
@@ -22,7 +23,7 @@ model Hotel {
   pincode Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
-  facilities String[]
+  facilities Facilities[]
   hotelType String?
   fourHourPrice String?
   eightHourPrice String?
@@ -35,8 +36,15 @@ model Hotel {
   admin HotelAdmin?
   roomType RoomType[]
 
-  @@index([city], type: Hash)
+  @@index([city])
   @@index([district])
+}
+
+model Facilities {
+  id String @id @default(cuid())
+  name String
+  hotel Hotel[]
+  roomType RoomType[]
 }
 
 model Images {
@@ -44,6 +52,8 @@ model Images {
   url String
   hotelId String
   hotel Hotel @relation(fields: [hotelId], references: [id])
+
+  @@index([hotelId])
 }
 
 model Booking {
@@ -63,6 +73,8 @@ model Booking {
   updatedAt DateTime @updatedAt @default(now())
   hotel Hotel @relation(fields: [hotelId], references: [id])
   referral Referral @relation(fields: [referralCode], references: [code])
+  @@index([hotelId])
+  @@index([referralCode])
 }
 
 model HotelAdmin {
@@ -84,7 +96,8 @@ model RoomType {
   id String @id @default(cuid())
   isACRoom Boolean
   roomPrice String
-  facilites String[]
+  facilites Facilities[]
   hotelId String
   hotel Hotel @relation(fields: [hotelId], references: [id])
+  @@index([hotelId])
 }
