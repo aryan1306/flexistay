@@ -8,3 +8,10 @@ export function exclude<T, Key extends keyof T>(
   }
   return user;
 }
+export const priceDisplay = (value: string) => {
+  return new Intl.NumberFormat("en-IN", {
+    maximumSignificantDigits: 5,
+    style: "currency",
+    currency: "INR",
+  }).format(parseInt(value));
+};

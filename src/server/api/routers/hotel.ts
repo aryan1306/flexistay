@@ -50,4 +50,25 @@ export const hotelRouter = createTRPCRouter({
     const hotels = await ctx.prisma.hotel.findMany({ take: 25 });
     return hotels;
   }),
+  getHotelPriceListById: publicProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async ({ input, ctx }) => {
+      const priceList = await ctx.prisma.hotel.findFirst({
+        where: { id: input.id },
+        select: {
+          nonACOgPrice: true,
+          nonACPrice: true,
+          generalPrice: true,
+          originalPrice: true,
+          fourHourPrice: true,
+          eightHourPrice: true,
+          singleOccupancyNonAcPrice: true,
+          singleOccupancyAcPrice: true,
+          hotelGst: true,
+          platformGst: true,
+          platformFee: true,
+        },
+      });
+      return priceList;
+    }),
 });

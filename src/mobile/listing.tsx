@@ -1,6 +1,6 @@
 import { Card } from "@/components/listing/Card";
 import { Navbar } from "@/components/Navbar";
-import type { Images, Hotel } from "@prisma/client";
+import type { Images, Hotel, Facilities } from "@prisma/client";
 import { RiSortDesc } from "react-icons/ri";
 import { Toaster } from "react-hot-toast";
 
@@ -8,12 +8,20 @@ interface Props {
   data:
     | (Hotel & {
         images: Images[];
+        facilities: Facilities[];
       })[]
     | undefined;
   hotelType: string;
 }
 
 export const MobileListing = ({ data, hotelType }: Props) => {
+  const createFacilityList = (list: Facilities[]) => {
+    const arr: string[] = [];
+    list.map((facility) => {
+      arr.push(facility.name);
+    });
+    return arr;
+  };
   return (
     <>
       <Navbar mobile={true} isListingPage={true} />
@@ -38,7 +46,7 @@ export const MobileListing = ({ data, hotelType }: Props) => {
                 ogPrice={
                   item.nonACOgPrice ? item.nonACOgPrice : item.originalPrice
                 }
-                facilities={item.facilities}
+                facilities={createFacilityList(item.facilities)}
                 hotelId={item.id}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 hotelType={item.hotelType!}

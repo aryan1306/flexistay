@@ -31,6 +31,12 @@ model Hotel {
   originalPrice String
   nonACPrice String?
   nonACOgPrice String?
+  singleOccupancyNonAcPrice String?
+  singleOccupancyAcPrice String?
+  hotelGst String?
+  platformGst String?
+  platformFee String?
+  isActive Boolean @default(true)
   images Images[]
   bookings Booking[]
   admin HotelAdmin?
@@ -65,13 +71,15 @@ model Booking {
   price String
   hotelId String
   guestId String
+  primaryGuestName String
+  primaryGuestMobile String
   noOfGuest Int
   noOfChildren Int
   noOfRoom Int
   referralCode String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
-  hotel Hotel @relation(fields: [hotelId], references: [id])
+  hotel Hotel? @relation(fields: [hotelId], references: [id])
   referral Referral @relation(fields: [referralCode], references: [code])
   @@index([hotelId])
   @@index([referralCode])
@@ -82,7 +90,8 @@ model HotelAdmin {
   userId String
   password String
   hotelId String @unique
-  hotel Hotel@relation(fields: [hotelId], references: [id])
+  hotel Hotel @relation(fields: [hotelId], references: [id])
+  @@index([hotelId])
 }
 
 model Referral {

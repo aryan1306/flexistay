@@ -3,7 +3,7 @@ import { toast } from "react-hot-toast";
 import { IoCloseSharp } from "react-icons/io5";
 
 interface Props {
-  title?: string;
+  title: string;
 }
 
 export default function BookingHeader({ title }: Props) {
@@ -24,9 +24,7 @@ export default function BookingHeader({ title }: Props) {
         }}
         className="text-2xl"
       />
-      <h1 className="ml-4 text-xl font-semibold text-brand-primary">
-        {title ? title : "Review your Booking"}
-      </h1>
+      <h1 className="ml-4 text-xl font-semibold text-brand-primary">{title}</h1>
     </div>
   );
 }

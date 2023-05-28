@@ -55,10 +55,9 @@ export default function Hotel(
   const { hour: hours, hotelType: requestedHotelType } = router.query;
   const [isOpen, setIsOpen] = useState(false);
   const [isACRoomSelected, setIsACRoomSelected] = useState(true);
-  const [setHotelId, setHotelType] = useHotelDetailsStore((state) => [
-    state.setHotelId,
-    state.setHotelType,
-  ]);
+  const [setHotelId, setHotelType, setHotelName] = useHotelDetailsStore(
+    (state) => [state.setHotelId, state.setHotelType, state.setHotelName]
+  );
   const { data, isLoading, isError } = api.hotel.getById.useQuery({ id });
   const [option, setOption] = useState<{
     price: string | null;
@@ -103,7 +102,7 @@ export default function Hotel(
     switch (item) {
       case "WIFI":
         return <AiOutlineWifi className={className} />;
-      case "AC":
+      case "AC ROOM":
         return <TbAirConditioning className={className} />;
       case "RESTAURANT":
         return <IoRestaurantOutline className={className} />;
@@ -135,19 +134,16 @@ export default function Hotel(
         <Navbar mobile={true} isListingPage={false} />
         <div className="mx-3 h-screen">
           <div className="carousel-center carousel rounded-box mt-6 max-w-md space-x-4 bg-red-100 p-4 md:w-full">
-            {/* eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call */}
             {data?.images.map((img) => (
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
               <div
                 key={img.id}
                 className="carousel-item max-h-52 min-h-[13rem]"
               >
                 <Image
-                  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
                   src={img.url}
                   width={290}
                   height={190}
-                  className="rounded-box max-h-52 min-h-[13rem]"
+                  className="rounded-box h-auto max-h-52 min-h-[13rem]"
                   alt={data.name}
                 />
               </div>
@@ -328,10 +324,10 @@ export default function Hotel(
             <h2 className="text-xl font-semibold">Amenities</h2>
             <div className="my-4 grid grid-flow-row grid-cols-2 place-items-start">
               {data?.facilities.map((item) => (
-                <div key={item} className="mb-2 flex items-center">
-                  {renderIcons(item.toUpperCase(), "text-lg")}
+                <div key={item.id} className="mb-2 flex items-center">
+                  {renderIcons(item.name.toUpperCase(), "text-lg")}
                   <span className="ml-2 text-lg text-black">
-                    {item.charAt(0).toUpperCase() + item.slice(1)}
+                    {item.name.charAt(0).toUpperCase() + item.name.slice(1)}
                   </span>
                 </div>
               ))}
@@ -382,9 +378,10 @@ export default function Hotel(
               <button
                 onClick={() => {
                   setHotelId(data.id);
+                  setHotelName(data.name);
                   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                   setHotelType(data.hotelType!);
-                  void router.push("/booking");
+                  void router.push("/pax-selection");
                 }}
                 className="h-10 w-[85%] self-center justify-self-center rounded-md bg-brand-primary text-white shadow-lg disabled:bg-slate-500 disabled:text-slate-300 disabled:shadow-none"
               >

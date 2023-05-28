@@ -48,7 +48,7 @@ export default function Contact() {
               </a>
               <a href="tel:9284816254">
                 <h3 className="pt-5 text-center text-xl font-semibold text-brand-primary">
-                  +91-9284816254
+                  +91-9561236254
                 </h3>
               </a>
             </div>
