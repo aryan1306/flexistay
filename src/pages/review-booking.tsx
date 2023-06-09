@@ -25,6 +25,7 @@ export default function ReviewBooking() {
     state.hotelId,
   ]);
   const { user } = useUser();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data } = api.hotel.getHotelPriceListById.useQuery({ id: hotelId });
 
   const formattedDate = (date: string) => {

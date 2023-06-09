@@ -1,112 +1,134 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
 model Hotel {
-  id        String   @id @default(cuid())
-  name String
-  phone String @unique
-  email String @unique
-  district String
-  address1 String
-  address2 String
-  city String
-  pincode Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
-  facilities Facilities[]
-  hotelType String?
-  fourHourPrice String?
-  eightHourPrice String?
-  generalPrice String?
-  originalPrice String
-  nonACPrice String?
-  nonACOgPrice String?
+  id                        String       @id @default(cuid())
+  name                      String
+  phone                     String       @unique
+  email                     String       @unique
+  district                  String
+  address1                  String
+  address2                  String
+  city                      String
+  pincode                   Int
+  createdAt                 DateTime     @default(now())
+  updatedAt                 DateTime     @default(now()) @updatedAt
+  hotelType                 String?
+  fourHourPrice             String?
+  eightHourPrice            String?
+  generalPrice              String?
+  originalPrice             String
+  nonACPrice                String?
+  nonACOgPrice              String?
+  singleOccupancyAcPrice    String?
   singleOccupancyNonAcPrice String?
-  singleOccupancyAcPrice String?
-  hotelGst String?
-  platformGst String?
-  platformFee String?
-  isActive Boolean @default(true)
-  images Images[]
-  bookings Booking[]
-  admin HotelAdmin?
-  roomType RoomType[]
+  hotelGst                  String?
+  platformGst               String?
+  platformFee               String?
+  isActive                  Boolean      @default(true)
+  facilities                Facilities[]
+  images                    Images[]
+  bookings                  Booking[]
+  admin                     HotelAdmin?
+  roomType                  RoomType[]
 
   @@index([city])
   @@index([district])
 }
 
 model Facilities {
-  id String @id @default(cuid())
-  name String
-  hotel Hotel[]
+  id       String     @id @default(cuid())
+  name     String
+  hotel    Hotel[]
   roomType RoomType[]
 }
 
 model Images {
-  id String @id @default(cuid())
-  url String
+  id      String @id @default(cuid())
+  url     String
   hotelId String
-  hotel Hotel @relation(fields: [hotelId], references: [id])
+  hotel   Hotel  @relation(fields: [hotelId], references: [id])
 
   @@index([hotelId])
 }
 
 model Booking {
-  id        String   @id @default(cuid())
-  isCancelled Boolean? @default(false)
-  checkInDateTime DateTime
-  checkOutDateTime DateTime
-  hasPaid Boolean @default(false)
-  price String
-  hotelId String
-  guestId String
-  primaryGuestName String
+  id                 String   @id @default(cuid())
+  isCancelled        Boolean? @default(false)
+  checkInDateTime    DateTime
+  checkOutDateTime   DateTime
+  hasPaid            Boolean  @default(false)
+  price              String
+  hotelId            String
+  guestId            String
+  noOfGuest          Int
+  noOfChildren       Int
+  noOfRoom           Int
+  referralCode       String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @default(now()) @updatedAt
   primaryGuestMobile String
-  noOfGuest Int
-  noOfChildren Int
-  noOfRoom Int
-  referralCode String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt @default(now())
-  hotel Hotel? @relation(fields: [hotelId], references: [id])
-  referral Referral @relation(fields: [referralCode], references: [code])
+  primaryGuestName   String
+  shareableId        String
+  hotelAdminId       String
+  roomType           String   @db.VarChar(30)
+  amount             String
+  hotel              Hotel?   @relation(fields: [hotelId], references: [id])
+  referral           Referral @relation(fields: [referralCode], references: [code])
+
   @@index([hotelId])
   @@index([referralCode])
+  @@index([hotelAdminId])
 }
 
 model HotelAdmin {
-  id        String   @id @default(cuid())
-  userId String
-  password String
+  id      String @id @default(cuid())
+  userId  String @unique
   hotelId String @unique
-  hotel Hotel @relation(fields: [hotelId], references: [id])
+  hotel   Hotel  @relation(fields: [hotelId], references: [id])
+
   @@index([hotelId])
 }
 
 model Referral {
-  id        String   @id @default(cuid())
-  code String @unique
-  name String
+  id      String    @id @default(cuid())
+  code    String    @unique
+  name    String
   booking Booking[]
 }
 
 model RoomType {
-  id String @id @default(cuid())
-  isACRoom Boolean
+  id        String       @id @default(cuid())
+  isACRoom  Boolean
   roomPrice String
+  hotelId   String
   facilites Facilities[]
-  hotelId String
-  hotel Hotel @relation(fields: [hotelId], references: [id])
+  hotel     Hotel        @relation(fields: [hotelId], references: [id])
+
   @@index([hotelId])
+}
+
+model FacilitiesToHotel {
+  A String
+  B String
+
+  @@unique([A, B], map: "_FacilitiesToHotel_AB_unique")
+  @@index([B], map: "_FacilitiesToHotel_B_index")
+  @@map("_FacilitiesToHotel")
+}
+
+model FacilitiesToRoomType {
+  A String
+  B String
+
+  @@unique([A, B], map: "_FacilitiesToRoomType_AB_unique")
+  @@index([B], map: "_FacilitiesToRoomType_B_index")
+  @@map("_FacilitiesToRoomType")
 }
