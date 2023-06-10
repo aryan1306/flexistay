@@ -72,7 +72,9 @@ export default function ReviewBooking() {
         >
           <div className="flex justify-center">
             <div className="flex flex-col">
-              <span className="font-semibold">{formattedDate(date)}</span>
+              <span className="font-semibold">
+                {formattedDate(date ? date : new Date().toUTCString())}
+              </span>
               <div>
                 <span className="text-center text-sm tracking-tighter">
                   Check-in: 10:30am
@@ -81,7 +83,9 @@ export default function ReviewBooking() {
             </div>
             <CloudSun className="mx-5 text-slate-500" />
             <div className="flex flex-col">
-              <span className="font-semibold">{formattedDate(date)}</span>
+              <span className="font-semibold">
+                {formattedDate(date ? date : new Date().toUTCString())}
+              </span>
               <div>
                 <span className="text-center text-sm tracking-tighter">
                   Check-out: 12:30pm
