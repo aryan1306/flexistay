@@ -8,7 +8,7 @@ export default function Booking() {
   ]);
   return (
     <>
-      <BookingHeader />
+      <BookingHeader title="Booking" />
       <p>booking page</p>
       <pre>
         {hotelId}, {hotelType}
